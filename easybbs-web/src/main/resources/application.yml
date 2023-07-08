@@ -1,0 +1,22 @@
+server:
+  port: 7070
+  servlet:
+    context-path: /api
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/easybbs?serverTimezone=GMT%2b8
+    username: root
+    password: 123456
+  mail:
+    host: smtp.qq.com
+    username: 1553014513@qq.com
+    password: jwacdrbaupvnicac
+    default-encoding: utf-8
+    port: 587
+
+  mybatis:
+    configuration:
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    mapper-locations: classpath:mappers/*.xml
