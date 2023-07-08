@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.easybbs.mappers.ForumBoardMapper">
+
+	<!--实体映射-->
+	<resultMap id="base_result_map" type="com.easybbs.entity.po.ForumBoard">
+		<!--板块ID-->
+		<id column="board_id" property="boardId"  />
+		<!--父级板块ID-->
+		<result column="p_board_id" property="pBoardId"  />
+		<!--板块名-->
+		<result column="board_name" property="boardName"  />
+		<!--封面-->
+		<result column="cover" property="cover"  />
+		<!--描述-->
+		<result column="board_desc" property="boardDesc"  />
+		<!--排序-->
+		<result column="sort" property="sort"  />
+		<!--0:只允许管理员发帖 1:任何人可以发帖-->
+		<result column="post_type" property="postType"  />
+	</resultMap>
+
+
+	<!-- 通用查询结果列-->
+	<sql id="base_column_list">
+		 board_id,p_board_id,board_name,cover,board_desc,
+		 sort,post_type
+	</sql>
+
+	<sql id="base_condition_filed">
+			<if test="query.boardId != null">
+				 and  board_id = #{query.boardId}
+			</if>
+			<if test="query.pBoardId != null">
+				 and  p_board_id = #{query.pBoardId}
+			</if>
+			<if test="query.boardName != null and query.boardName!=''">
+				 and  board_name = #{query.boardName}
+			</if>
+			<if test="query.cover != null and query.cover!=''">
+				 and  cover = #{query.cover}
+			</if>
+			<if test="query.boardDesc != null and query.boardDesc!=''">
+				 and  board_desc = #{query.boardDesc}
+			</if>
+			<if test="query.sort != null">
+				 and  sort = #{query.sort}
+			</if>
+			<if test="query.postType != null">
+				 and  post_type = #{query.postType}
+			</if>
+	</sql>
+	<!-- 通用条件列-->
+	<sql id="base_condition">
+	 <where>
+		 <include refid="base_condition_filed" />
+	 </where>
+	</sql>
+
+	<!-- 通用查询条件列-->
+	<sql id="query_condition">
+	 <where>
+			<include refid="base_condition_filed" />
+			<if test="query.boardNameFuzzy!= null  and query.boardNameFuzzy!=''">
+				 and  board_name like concat('%', #{query.boardNameFuzzy}, '%')
+			</if>
+			<if test="query.coverFuzzy!= null  and query.coverFuzzy!=''">
+				 and  cover like concat('%', #{query.coverFuzzy}, '%')
+			</if>
+			<if test="query.boardDescFuzzy!= null  and query.boardDescFuzzy!=''">
+				 and  board_desc like concat('%', #{query.boardDescFuzzy}, '%')
+			</if>
+	 </where>
+	</sql>
+
+	<!-- 查询集合-->
+	<select id="selectList" resultMap="base_result_map" >
+		 SELECT <include refid="base_column_list" /> FROM forum_board <include refid="query_condition" />
+		 <if test="query.orderBy!=null">
+			 order by ${query.orderBy}
+		 </if>
+		 <if test="query.simplePage!=null">
+			 limit #{query.simplePage.start},#{query.simplePage.end}
+		 </if>
+	</select>
+
+	<!-- 查询数量-->
+	<select id="selectCount" resultType="java.lang.Integer" >
+		 SELECT count(1) FROM forum_board <include refid="query_condition" />
+	</select>
+
+	<!-- 插入 （匹配有值的字段）-->
+	<insert id="insert" parameterType="com.easybbs.entity.po.ForumBoard">
+		<selectKey keyProperty="bean.boardId" resultType="Integer" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		 INSERT INTO forum_board
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="bean.pBoardId != null">
+				 p_board_id,
+			</if>
+			<if test="bean.boardName != null">
+				 board_name,
+			</if>
+			<if test="bean.cover != null">
+				 cover,
+			</if>
+			<if test="bean.boardDesc != null">
+				 board_desc,
+			</if>
+			<if test="bean.sort != null">
+				 sort,
+			</if>
+			<if test="bean.postType != null">
+				 post_type,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="bean.pBoardId!=null">
+				 #{bean.pBoardId},
+			</if>
+			<if test="bean.boardName!=null">
+				 #{bean.boardName},
+			</if>
+			<if test="bean.cover!=null">
+				 #{bean.cover},
+			</if>
+			<if test="bean.boardDesc!=null">
+				 #{bean.boardDesc},
+			</if>
+			<if test="bean.sort!=null">
+				 #{bean.sort},
+			</if>
+			<if test="bean.postType!=null">
+				 #{bean.postType},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 插入或者更新 （匹配有值的字段）-->
+	<insert id="insertOrUpdate" parameterType="com.easybbs.entity.po.ForumBoard">
+		 INSERT INTO forum_board
+		 <trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.boardId != null">
+				 board_id,
+			</if>
+			<if test="bean.pBoardId != null">
+				 p_board_id,
+			</if>
+			<if test="bean.boardName != null">
+				 board_name,
+			</if>
+			<if test="bean.cover != null">
+				 cover,
+			</if>
+			<if test="bean.boardDesc != null">
+				 board_desc,
+			</if>
+			<if test="bean.sort != null">
+				 sort,
+			</if>
+			<if test="bean.postType != null">
+				 post_type,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.boardId!=null">
+				 #{bean.boardId},
+			</if>
+			<if test="bean.pBoardId!=null">
+				 #{bean.pBoardId},
+			</if>
+			<if test="bean.boardName!=null">
+				 #{bean.boardName},
+			</if>
+			<if test="bean.cover!=null">
+				 #{bean.cover},
+			</if>
+			<if test="bean.boardDesc!=null">
+				 #{bean.boardDesc},
+			</if>
+			<if test="bean.sort!=null">
+				 #{bean.sort},
+			</if>
+			<if test="bean.postType!=null">
+				 #{bean.postType},
+			</if>
+		 </trim>
+		 on DUPLICATE key update 
+		 <trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.pBoardId!=null">
+				 p_board_id = VALUES(p_board_id),
+			</if>
+			<if test="bean.boardName!=null">
+				 board_name = VALUES(board_name),
+			</if>
+			<if test="bean.cover!=null">
+				 cover = VALUES(cover),
+			</if>
+			<if test="bean.boardDesc!=null">
+				 board_desc = VALUES(board_desc),
+			</if>
+			<if test="bean.sort!=null">
+				 sort = VALUES(sort),
+			</if>
+			<if test="bean.postType!=null">
+				 post_type = VALUES(post_type),
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 添加 （批量插入）-->
+	<insert id="insertBatch" parameterType="com.easybbs.entity.po.ForumBoard" useGeneratedKeys="true" keyProperty="boardId">
+		 INSERT INTO forum_board(
+			 p_board_id,
+			 board_name,
+			 cover,
+			 board_desc,
+			 sort,
+			 post_type
+		 )values
+		 <foreach collection="list" item="item" separator=",">
+			 (
+				 #{item.pBoardId},
+				 #{item.boardName},
+				 #{item.cover},
+				 #{item.boardDesc},
+				 #{item.sort},
+				 #{item.postType}
+			 )
+		 </foreach>
+	</insert>
+
+	<!-- 批量新增修改 （批量插入）-->
+	<insert id="insertOrUpdateBatch" parameterType="com.easybbs.entity.po.ForumBoard">
+		 INSERT INTO forum_board(
+			 p_board_id,
+			 board_name,
+			 cover,
+			 board_desc,
+			 sort,
+			 post_type
+		 )values
+		 <foreach collection="list" item="item" separator=",">
+			 (
+				 #{item.pBoardId},
+				 #{item.boardName},
+				 #{item.cover},
+				 #{item.boardDesc},
+				 #{item.sort},
+				 #{item.postType}
+			 )
+		 </foreach>
+			on DUPLICATE key update 
+			p_board_id = VALUES(p_board_id),
+			board_name = VALUES(board_name),
+			cover = VALUES(cover),
+			board_desc = VALUES(board_desc),
+			sort = VALUES(sort),
+			post_type = VALUES(post_type)
+	</insert>
+
+	<!--多条件修改-->
+	<update id="updateByParam" parameterType="com.easybbs.entity.query.ForumBoardQuery">
+		 UPDATE forum_board
+ 		 <set> 
+			<if test="bean.pBoardId != null">
+				 p_board_id = #{bean.pBoardId},
+			</if>
+			<if test="bean.boardName != null">
+				 board_name = #{bean.boardName},
+			</if>
+			<if test="bean.cover != null">
+				 cover = #{bean.cover},
+			</if>
+			<if test="bean.boardDesc != null">
+				 board_desc = #{bean.boardDesc},
+			</if>
+			<if test="bean.sort != null">
+				 sort = #{bean.sort},
+			</if>
+			<if test="bean.postType != null">
+				 post_type = #{bean.postType},
+			</if>
+ 		 </set>
+ 		 <include refid="query_condition" />
+	</update>
+
+	<!--多条件删除-->
+	<delete id="deleteByParam">
+		 delete from forum_board
+ 		 <include refid="query_condition" />
+	</delete>
+
+	<!-- 根据BoardId修改-->
+	<update id="updateByBoardId" parameterType="com.easybbs.entity.po.ForumBoard">
+		 UPDATE forum_board
+ 		 <set> 
+			<if test="bean.pBoardId != null">
+				 p_board_id = #{bean.pBoardId},
+			</if>
+			<if test="bean.boardName != null">
+				 board_name = #{bean.boardName},
+			</if>
+			<if test="bean.cover != null">
+				 cover = #{bean.cover},
+			</if>
+			<if test="bean.boardDesc != null">
+				 board_desc = #{bean.boardDesc},
+			</if>
+			<if test="bean.sort != null">
+				 sort = #{bean.sort},
+			</if>
+			<if test="bean.postType != null">
+				 post_type = #{bean.postType},
+			</if>
+ 		 </set>
+ 		 where board_id=#{boardId}
+	</update>
+
+	<!-- 根据BoardId删除-->
+	<delete id="deleteByBoardId">
+		delete from forum_board where board_id=#{boardId}
+	</delete>
+
+	<!-- 根据PrimaryKey获取对象-->
+	<select id="selectByBoardId" resultMap="base_result_map" >
+		select <include refid="base_column_list" /> from forum_board where board_id=#{boardId}
+	</select>
+
+</mapper>

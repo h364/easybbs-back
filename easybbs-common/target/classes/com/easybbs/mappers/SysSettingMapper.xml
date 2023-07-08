@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.easybbs.mappers.SysSettingMapper">
+
+	<!--实体映射-->
+	<resultMap id="base_result_map" type="com.easybbs.entity.po.SysSetting">
+		<!--编号-->
+		<result column="code" property="code"  />
+		<!--设置信息-->
+		<result column="json_content" property="jsonContent"  />
+	</resultMap>
+
+
+	<!-- 通用查询结果列-->
+	<sql id="base_column_list">
+		 code,json_content
+	</sql>
+
+	<sql id="base_condition_filed">
+			<if test="query.code != null and query.code!=''">
+				 and  code = #{query.code}
+			</if>
+			<if test="query.jsonContent != null and query.jsonContent!=''">
+				 and  json_content = #{query.jsonContent}
+			</if>
+	</sql>
+	<!-- 通用条件列-->
+	<sql id="base_condition">
+	 <where>
+		 <include refid="base_condition_filed" />
+	 </where>
+	</sql>
+
+	<!-- 通用查询条件列-->
+	<sql id="query_condition">
+	 <where>
+			<include refid="base_condition_filed" />
+			<if test="query.codeFuzzy!= null  and query.codeFuzzy!=''">
+				 and  code like concat('%', #{query.codeFuzzy}, '%')
+			</if>
+			<if test="query.jsonContentFuzzy!= null  and query.jsonContentFuzzy!=''">
+				 and  json_content like concat('%', #{query.jsonContentFuzzy}, '%')
+			</if>
+	 </where>
+	</sql>
+
+	<!-- 查询集合-->
+	<select id="selectList" resultMap="base_result_map" >
+		 SELECT <include refid="base_column_list" /> FROM sys_setting <include refid="query_condition" />
+		 <if test="query.orderBy!=null">
+			 order by ${query.orderBy}
+		 </if>
+		 <if test="query.simplePage!=null">
+			 limit #{query.simplePage.start},#{query.simplePage.end}
+		 </if>
+	</select>
+
+	<!-- 查询数量-->
+	<select id="selectCount" resultType="java.lang.Integer" >
+		 SELECT count(1) FROM sys_setting <include refid="query_condition" />
+	</select>
+
+	<!-- 插入 （匹配有值的字段）-->
+	<insert id="insert" parameterType="com.easybbs.entity.po.SysSetting">
+		 INSERT INTO sys_setting
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="bean.code != null">
+				 code,
+			</if>
+			<if test="bean.jsonContent != null">
+				 json_content,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="bean.code!=null">
+				 #{bean.code},
+			</if>
+			<if test="bean.jsonContent!=null">
+				 #{bean.jsonContent},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 插入或者更新 （匹配有值的字段）-->
+	<insert id="insertOrUpdate" parameterType="com.easybbs.entity.po.SysSetting">
+		 INSERT INTO sys_setting
+		 <trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.code != null">
+				 code,
+			</if>
+			<if test="bean.jsonContent != null">
+				 json_content,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.code!=null">
+				 #{bean.code},
+			</if>
+			<if test="bean.jsonContent!=null">
+				 #{bean.jsonContent},
+			</if>
+		 </trim>
+		 on DUPLICATE key update 
+		 <trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.code!=null">
+				 code = VALUES(code),
+			</if>
+			<if test="bean.jsonContent!=null">
+				 json_content = VALUES(json_content),
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 添加 （批量插入）-->
+	<insert id="insertBatch" parameterType="com.easybbs.entity.po.SysSetting">
+		 INSERT INTO sys_setting(
+			 code,
+			 json_content
+		 )values
+		 <foreach collection="list" item="item" separator=",">
+			 (
+				 #{item.code},
+				 #{item.jsonContent}
+			 )
+		 </foreach>
+	</insert>
+
+	<!-- 批量新增修改 （批量插入）-->
+	<insert id="insertOrUpdateBatch" parameterType="com.easybbs.entity.po.SysSetting">
+		 INSERT INTO sys_setting(
+			 code,
+			 json_content
+		 )values
+		 <foreach collection="list" item="item" separator=",">
+			 (
+				 #{item.code},
+				 #{item.jsonContent}
+			 )
+		 </foreach>
+			on DUPLICATE key update 
+			code = VALUES(code),
+			json_content = VALUES(json_content)
+	</insert>
+
+	<!--多条件修改-->
+	<update id="updateByParam" parameterType="com.easybbs.entity.query.SysSettingQuery">
+		 UPDATE sys_setting
+ 		 <set> 
+			<if test="bean.code != null">
+				 code = #{bean.code},
+			</if>
+			<if test="bean.jsonContent != null">
+				 json_content = #{bean.jsonContent},
+			</if>
+ 		 </set>
+ 		 <include refid="query_condition" />
+	</update>
+
+	<!--多条件删除-->
+	<delete id="deleteByParam">
+		 delete from sys_setting
+ 		 <include refid="query_condition" />
+	</delete>
+
+	<!-- 根据Code修改-->
+	<update id="updateByCode" parameterType="com.easybbs.entity.po.SysSetting">
+		 UPDATE sys_setting
+ 		 <set> 
+			<if test="bean.jsonContent != null">
+				 json_content = #{bean.jsonContent},
+			</if>
+ 		 </set>
+ 		 where code=#{code}
+	</update>
+
+	<!-- 根据Code删除-->
+	<delete id="deleteByCode">
+		delete from sys_setting where code=#{code}
+	</delete>
+
+	<!-- 根据PrimaryKey获取对象-->
+	<select id="selectByCode" resultMap="base_result_map" >
+		select <include refid="base_column_list" /> from sys_setting where code=#{code}
+	</select>
+
+</mapper>

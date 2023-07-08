@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.easybbs.mappers.LikeRecordMapper">
+
+	<!--实体映射-->
+	<resultMap id="base_result_map" type="com.easybbs.entity.po.LikeRecord">
+		<!--自增ID-->
+		<id column="op_id" property="opId"  />
+		<!--操作类型0:文章点赞 1:评论点赞-->
+		<result column="op_type" property="opType"  />
+		<!--主体ID-->
+		<result column="object_id" property="objectId"  />
+		<!--用户ID-->
+		<result column="user_id" property="userId"  />
+		<!--发布时间-->
+		<result column="create_time" property="createTime"  />
+		<!--主体作者ID-->
+		<result column="author_user_id" property="authorUserId"  />
+	</resultMap>
+
+
+	<!-- 通用查询结果列-->
+	<sql id="base_column_list">
+		 op_id,op_type,object_id,user_id,create_time,
+		 author_user_id
+	</sql>
+
+	<sql id="base_condition_filed">
+			<if test="query.opId != null">
+				 and  op_id = #{query.opId}
+			</if>
+			<if test="query.opType != null">
+				 and  op_type = #{query.opType}
+			</if>
+			<if test="query.objectId != null and query.objectId!=''">
+				 and  object_id = #{query.objectId}
+			</if>
+			<if test="query.userId != null and query.userId!=''">
+				 and  user_id = #{query.userId}
+			</if>
+			<if test="query.createTime != null and query.createTime!=''">
+				 <![CDATA[ and  create_time=str_to_date(#{query.createTime}, '%Y-%m-%d') ]]>
+			</if>
+			<if test="query.authorUserId != null and query.authorUserId!=''">
+				 and  author_user_id = #{query.authorUserId}
+			</if>
+	</sql>
+	<!-- 通用条件列-->
+	<sql id="base_condition">
+	 <where>
+		 <include refid="base_condition_filed" />
+	 </where>
+	</sql>
+
+	<!-- 通用查询条件列-->
+	<sql id="query_condition">
+	 <where>
+			<include refid="base_condition_filed" />
+			<if test="query.objectIdFuzzy!= null  and query.objectIdFuzzy!=''">
+				 and  object_id like concat('%', #{query.objectIdFuzzy}, '%')
+			</if>
+			<if test="query.userIdFuzzy!= null  and query.userIdFuzzy!=''">
+				 and  user_id like concat('%', #{query.userIdFuzzy}, '%')
+			</if>
+			<if test="query.createTimeStart!= null and query.createTimeStart!=''">
+				 <![CDATA[ and  create_time>=str_to_date(#{query.createTimeStart}, '%Y-%m-%d') ]]>
+			</if>
+			<if test="query.createTimeEnd!= null and query.createTimeEnd!=''">
+				 <![CDATA[ and  create_time< date_sub(str_to_date(#{query.createTimeEnd},'%Y-%m-%d'),interval -1 day) ]]>
+			</if>
+			<if test="query.authorUserIdFuzzy!= null  and query.authorUserIdFuzzy!=''">
+				 and  author_user_id like concat('%', #{query.authorUserIdFuzzy}, '%')
+			</if>
+	 </where>
+	</sql>
+
+	<!-- 查询集合-->
+	<select id="selectList" resultMap="base_result_map" >
+		 SELECT <include refid="base_column_list" /> FROM like_record <include refid="query_condition" />
+		 <if test="query.orderBy!=null">
+			 order by ${query.orderBy}
+		 </if>
+		 <if test="query.simplePage!=null">
+			 limit #{query.simplePage.start},#{query.simplePage.end}
+		 </if>
+	</select>
+
+	<!-- 查询数量-->
+	<select id="selectCount" resultType="java.lang.Integer" >
+		 SELECT count(1) FROM like_record <include refid="query_condition" />
+	</select>
+
+	<!-- 插入 （匹配有值的字段）-->
+	<insert id="insert" parameterType="com.easybbs.entity.po.LikeRecord">
+		<selectKey keyProperty="bean.opId" resultType="Integer" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		 INSERT INTO like_record
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="bean.opType != null">
+				 op_type,
+			</if>
+			<if test="bean.objectId != null">
+				 object_id,
+			</if>
+			<if test="bean.userId != null">
+				 user_id,
+			</if>
+			<if test="bean.createTime != null">
+				 create_time,
+			</if>
+			<if test="bean.authorUserId != null">
+				 author_user_id,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="bean.opType!=null">
+				 #{bean.opType},
+			</if>
+			<if test="bean.objectId!=null">
+				 #{bean.objectId},
+			</if>
+			<if test="bean.userId!=null">
+				 #{bean.userId},
+			</if>
+			<if test="bean.createTime!=null">
+				 #{bean.createTime},
+			</if>
+			<if test="bean.authorUserId!=null">
+				 #{bean.authorUserId},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 插入或者更新 （匹配有值的字段）-->
+	<insert id="insertOrUpdate" parameterType="com.easybbs.entity.po.LikeRecord">
+		 INSERT INTO like_record
+		 <trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.opId != null">
+				 op_id,
+			</if>
+			<if test="bean.opType != null">
+				 op_type,
+			</if>
+			<if test="bean.objectId != null">
+				 object_id,
+			</if>
+			<if test="bean.userId != null">
+				 user_id,
+			</if>
+			<if test="bean.createTime != null">
+				 create_time,
+			</if>
+			<if test="bean.authorUserId != null">
+				 author_user_id,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.opId!=null">
+				 #{bean.opId},
+			</if>
+			<if test="bean.opType!=null">
+				 #{bean.opType},
+			</if>
+			<if test="bean.objectId!=null">
+				 #{bean.objectId},
+			</if>
+			<if test="bean.userId!=null">
+				 #{bean.userId},
+			</if>
+			<if test="bean.createTime!=null">
+				 #{bean.createTime},
+			</if>
+			<if test="bean.authorUserId!=null">
+				 #{bean.authorUserId},
+			</if>
+		 </trim>
+		 on DUPLICATE key update 
+		 <trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.opType!=null">
+				 op_type = VALUES(op_type),
+			</if>
+			<if test="bean.objectId!=null">
+				 object_id = VALUES(object_id),
+			</if>
+			<if test="bean.userId!=null">
+				 user_id = VALUES(user_id),
+			</if>
+			<if test="bean.createTime!=null">
+				 create_time = VALUES(create_time),
+			</if>
+			<if test="bean.authorUserId!=null">
+				 author_user_id = VALUES(author_user_id),
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 添加 （批量插入）-->
+	<insert id="insertBatch" parameterType="com.easybbs.entity.po.LikeRecord" useGeneratedKeys="true" keyProperty="opId">
+		 INSERT INTO like_record(
+			 op_type,
+			 object_id,
+			 user_id,
+			 create_time,
+			 author_user_id
+		 )values
+		 <foreach collection="list" item="item" separator=",">
+			 (
+				 #{item.opType},
+				 #{item.objectId},
+				 #{item.userId},
+				 #{item.createTime},
+				 #{item.authorUserId}
+			 )
+		 </foreach>
+	</insert>
+
+	<!-- 批量新增修改 （批量插入）-->
+	<insert id="insertOrUpdateBatch" parameterType="com.easybbs.entity.po.LikeRecord">
+		 INSERT INTO like_record(
+			 op_type,
+			 object_id,
+			 user_id,
+			 create_time,
+			 author_user_id
+		 )values
+		 <foreach collection="list" item="item" separator=",">
+			 (
+				 #{item.opType},
+				 #{item.objectId},
+				 #{item.userId},
+				 #{item.createTime},
+				 #{item.authorUserId}
+			 )
+		 </foreach>
+			on DUPLICATE key update 
+			op_type = VALUES(op_type),
+			object_id = VALUES(object_id),
+			user_id = VALUES(user_id),
+			create_time = VALUES(create_time),
+			author_user_id = VALUES(author_user_id)
+	</insert>
+
+	<!--多条件修改-->
+	<update id="updateByParam" parameterType="com.easybbs.entity.query.LikeRecordQuery">
+		 UPDATE like_record
+ 		 <set> 
+			<if test="bean.opType != null">
+				 op_type = #{bean.opType},
+			</if>
+			<if test="bean.objectId != null">
+				 object_id = #{bean.objectId},
+			</if>
+			<if test="bean.userId != null">
+				 user_id = #{bean.userId},
+			</if>
+			<if test="bean.createTime != null">
+				 create_time = #{bean.createTime},
+			</if>
+			<if test="bean.authorUserId != null">
+				 author_user_id = #{bean.authorUserId},
+			</if>
+ 		 </set>
+ 		 <include refid="query_condition" />
+	</update>
+
+	<!--多条件删除-->
+	<delete id="deleteByParam">
+		 delete from like_record
+ 		 <include refid="query_condition" />
+	</delete>
+
+	<!-- 根据OpId修改-->
+	<update id="updateByOpId" parameterType="com.easybbs.entity.po.LikeRecord">
+		 UPDATE like_record
+ 		 <set> 
+			<if test="bean.opType != null">
+				 op_type = #{bean.opType},
+			</if>
+			<if test="bean.objectId != null">
+				 object_id = #{bean.objectId},
+			</if>
+			<if test="bean.userId != null">
+				 user_id = #{bean.userId},
+			</if>
+			<if test="bean.createTime != null">
+				 create_time = #{bean.createTime},
+			</if>
+			<if test="bean.authorUserId != null">
+				 author_user_id = #{bean.authorUserId},
+			</if>
+ 		 </set>
+ 		 where op_id=#{opId}
+	</update>
+
+	<!-- 根据OpId删除-->
+	<delete id="deleteByOpId">
+		delete from like_record where op_id=#{opId}
+	</delete>
+
+	<!-- 根据PrimaryKey获取对象-->
+	<select id="selectByOpId" resultMap="base_result_map" >
+		select <include refid="base_column_list" /> from like_record where op_id=#{opId}
+	</select>
+
+	<!-- 根据ObjectIdAndUserIdAndOpType修改-->
+	<update id="updateByObjectIdAndUserIdAndOpType" parameterType="com.easybbs.entity.po.LikeRecord">
+		 UPDATE like_record
+ 		 <set> 
+			<if test="bean.createTime != null">
+				 create_time = #{bean.createTime},
+			</if>
+			<if test="bean.authorUserId != null">
+				 author_user_id = #{bean.authorUserId},
+			</if>
+ 		 </set>
+ 		 where object_id=#{objectId} and user_id=#{userId} and op_type=#{opType}
+	</update>
+
+	<!-- 根据ObjectIdAndUserIdAndOpType删除-->
+	<delete id="deleteByObjectIdAndUserIdAndOpType">
+		delete from like_record where object_id=#{objectId} and user_id=#{userId} and op_type=#{opType}
+	</delete>
+
+	<!-- 根据PrimaryKey获取对象-->
+	<select id="selectByObjectIdAndUserIdAndOpType" resultMap="base_result_map" >
+		select <include refid="base_column_list" /> from like_record where object_id=#{objectId} and user_id=#{userId} and op_type=#{opType}
+	</select>
+
+</mapper>

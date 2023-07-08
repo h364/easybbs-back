@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.easybbs.mappers.UserIntegralRecordMapper">
+
+	<!--实体映射-->
+	<resultMap id="base_result_map" type="com.easybbs.entity.po.UserIntegralRecord">
+		<!--记录ID-->
+		<id column="record_id" property="recordId"  />
+		<!--用户ID-->
+		<result column="user_id" property="userId"  />
+		<!--操作类型-->
+		<result column="oper_type" property="operType"  />
+		<!--积分-->
+		<result column="integral" property="integral"  />
+		<!--创建时间-->
+		<result column="create_time" property="createTime"  />
+	</resultMap>
+
+
+	<!-- 通用查询结果列-->
+	<sql id="base_column_list">
+		 record_id,user_id,oper_type,integral,create_time
+		 
+	</sql>
+
+	<sql id="base_condition_filed">
+			<if test="query.recordId != null">
+				 and  record_id = #{query.recordId}
+			</if>
+			<if test="query.userId != null and query.userId!=''">
+				 and  user_id = #{query.userId}
+			</if>
+			<if test="query.operType != null">
+				 and  oper_type = #{query.operType}
+			</if>
+			<if test="query.integral != null">
+				 and  integral = #{query.integral}
+			</if>
+			<if test="query.createTime != null and query.createTime!=''">
+				 <![CDATA[ and  create_time=str_to_date(#{query.createTime}, '%Y-%m-%d') ]]>
+			</if>
+	</sql>
+	<!-- 通用条件列-->
+	<sql id="base_condition">
+	 <where>
+		 <include refid="base_condition_filed" />
+	 </where>
+	</sql>
+
+	<!-- 通用查询条件列-->
+	<sql id="query_condition">
+	 <where>
+			<include refid="base_condition_filed" />
+			<if test="query.userIdFuzzy!= null  and query.userIdFuzzy!=''">
+				 and  user_id like concat('%', #{query.userIdFuzzy}, '%')
+			</if>
+			<if test="query.createTimeStart!= null and query.createTimeStart!=''">
+				 <![CDATA[ and  create_time>=str_to_date(#{query.createTimeStart}, '%Y-%m-%d') ]]>
+			</if>
+			<if test="query.createTimeEnd!= null and query.createTimeEnd!=''">
+				 <![CDATA[ and  create_time< date_sub(str_to_date(#{query.createTimeEnd},'%Y-%m-%d'),interval -1 day) ]]>
+			</if>
+	 </where>
+	</sql>
+
+	<!-- 查询集合-->
+	<select id="selectList" resultMap="base_result_map" >
+		 SELECT <include refid="base_column_list" /> FROM user_integral_record <include refid="query_condition" />
+		 <if test="query.orderBy!=null">
+			 order by ${query.orderBy}
+		 </if>
+		 <if test="query.simplePage!=null">
+			 limit #{query.simplePage.start},#{query.simplePage.end}
+		 </if>
+	</select>
+
+	<!-- 查询数量-->
+	<select id="selectCount" resultType="java.lang.Integer" >
+		 SELECT count(1) FROM user_integral_record <include refid="query_condition" />
+	</select>
+
+	<!-- 插入 （匹配有值的字段）-->
+	<insert id="insert" parameterType="com.easybbs.entity.po.UserIntegralRecord">
+		<selectKey keyProperty="bean.recordId" resultType="Integer" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		 INSERT INTO user_integral_record
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="bean.userId != null">
+				 user_id,
+			</if>
+			<if test="bean.operType != null">
+				 oper_type,
+			</if>
+			<if test="bean.integral != null">
+				 integral,
+			</if>
+			<if test="bean.createTime != null">
+				 create_time,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="bean.userId!=null">
+				 #{bean.userId},
+			</if>
+			<if test="bean.operType!=null">
+				 #{bean.operType},
+			</if>
+			<if test="bean.integral!=null">
+				 #{bean.integral},
+			</if>
+			<if test="bean.createTime!=null">
+				 #{bean.createTime},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 插入或者更新 （匹配有值的字段）-->
+	<insert id="insertOrUpdate" parameterType="com.easybbs.entity.po.UserIntegralRecord">
+		 INSERT INTO user_integral_record
+		 <trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.recordId != null">
+				 record_id,
+			</if>
+			<if test="bean.userId != null">
+				 user_id,
+			</if>
+			<if test="bean.operType != null">
+				 oper_type,
+			</if>
+			<if test="bean.integral != null">
+				 integral,
+			</if>
+			<if test="bean.createTime != null">
+				 create_time,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.recordId!=null">
+				 #{bean.recordId},
+			</if>
+			<if test="bean.userId!=null">
+				 #{bean.userId},
+			</if>
+			<if test="bean.operType!=null">
+				 #{bean.operType},
+			</if>
+			<if test="bean.integral!=null">
+				 #{bean.integral},
+			</if>
+			<if test="bean.createTime!=null">
+				 #{bean.createTime},
+			</if>
+		 </trim>
+		 on DUPLICATE key update 
+		 <trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.userId!=null">
+				 user_id = VALUES(user_id),
+			</if>
+			<if test="bean.operType!=null">
+				 oper_type = VALUES(oper_type),
+			</if>
+			<if test="bean.integral!=null">
+				 integral = VALUES(integral),
+			</if>
+			<if test="bean.createTime!=null">
+				 create_time = VALUES(create_time),
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 添加 （批量插入）-->
+	<insert id="insertBatch" parameterType="com.easybbs.entity.po.UserIntegralRecord" useGeneratedKeys="true" keyProperty="recordId">
+		 INSERT INTO user_integral_record(
+			 user_id,
+			 oper_type,
+			 integral,
+			 create_time
+		 )values
+		 <foreach collection="list" item="item" separator=",">
+			 (
+				 #{item.userId},
+				 #{item.operType},
+				 #{item.integral},
+				 #{item.createTime}
+			 )
+		 </foreach>
+	</insert>
+
+	<!-- 批量新增修改 （批量插入）-->
+	<insert id="insertOrUpdateBatch" parameterType="com.easybbs.entity.po.UserIntegralRecord">
+		 INSERT INTO user_integral_record(
+			 user_id,
+			 oper_type,
+			 integral,
+			 create_time
+		 )values
+		 <foreach collection="list" item="item" separator=",">
+			 (
+				 #{item.userId},
+				 #{item.operType},
+				 #{item.integral},
+				 #{item.createTime}
+			 )
+		 </foreach>
+			on DUPLICATE key update 
+			user_id = VALUES(user_id),
+			oper_type = VALUES(oper_type),
+			integral = VALUES(integral),
+			create_time = VALUES(create_time)
+	</insert>
+
+	<!--多条件修改-->
+	<update id="updateByParam" parameterType="com.easybbs.entity.query.UserIntegralRecordQuery">
+		 UPDATE user_integral_record
+ 		 <set> 
+			<if test="bean.userId != null">
+				 user_id = #{bean.userId},
+			</if>
+			<if test="bean.operType != null">
+				 oper_type = #{bean.operType},
+			</if>
+			<if test="bean.integral != null">
+				 integral = #{bean.integral},
+			</if>
+			<if test="bean.createTime != null">
+				 create_time = #{bean.createTime},
+			</if>
+ 		 </set>
+ 		 <include refid="query_condition" />
+	</update>
+
+	<!--多条件删除-->
+	<delete id="deleteByParam">
+		 delete from user_integral_record
+ 		 <include refid="query_condition" />
+	</delete>
+
+	<!-- 根据RecordId修改-->
+	<update id="updateByRecordId" parameterType="com.easybbs.entity.po.UserIntegralRecord">
+		 UPDATE user_integral_record
+ 		 <set> 
+			<if test="bean.userId != null">
+				 user_id = #{bean.userId},
+			</if>
+			<if test="bean.operType != null">
+				 oper_type = #{bean.operType},
+			</if>
+			<if test="bean.integral != null">
+				 integral = #{bean.integral},
+			</if>
+			<if test="bean.createTime != null">
+				 create_time = #{bean.createTime},
+			</if>
+ 		 </set>
+ 		 where record_id=#{recordId}
+	</update>
+
+	<!-- 根据RecordId删除-->
+	<delete id="deleteByRecordId">
+		delete from user_integral_record where record_id=#{recordId}
+	</delete>
+
+	<!-- 根据PrimaryKey获取对象-->
+	<select id="selectByRecordId" resultMap="base_result_map" >
+		select <include refid="base_column_list" /> from user_integral_record where record_id=#{recordId}
+	</select>
+
+</mapper>

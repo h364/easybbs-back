@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.easybbs.mappers.ForumArticleAttachmentDownloadMapper">
+
+	<!--实体映射-->
+	<resultMap id="base_result_map" type="com.easybbs.entity.po.ForumArticleAttachmentDownload">
+		<!--文件ID-->
+		<result column="file_id" property="fileId"  />
+		<!--用户id-->
+		<result column="user_id" property="userId"  />
+		<!--文章ID-->
+		<result column="article_id" property="articleId"  />
+		<!--文件下载次数-->
+		<result column="download_count" property="downloadCount"  />
+	</resultMap>
+
+
+	<!-- 通用查询结果列-->
+	<sql id="base_column_list">
+		 file_id,user_id,article_id,download_count
+	</sql>
+
+	<sql id="base_condition_filed">
+			<if test="query.fileId != null and query.fileId!=''">
+				 and  file_id = #{query.fileId}
+			</if>
+			<if test="query.userId != null and query.userId!=''">
+				 and  user_id = #{query.userId}
+			</if>
+			<if test="query.articleId != null and query.articleId!=''">
+				 and  article_id = #{query.articleId}
+			</if>
+			<if test="query.downloadCount != null">
+				 and  download_count = #{query.downloadCount}
+			</if>
+	</sql>
+	<!-- 通用条件列-->
+	<sql id="base_condition">
+	 <where>
+		 <include refid="base_condition_filed" />
+	 </where>
+	</sql>
+
+	<!-- 通用查询条件列-->
+	<sql id="query_condition">
+	 <where>
+			<include refid="base_condition_filed" />
+			<if test="query.fileIdFuzzy!= null  and query.fileIdFuzzy!=''">
+				 and  file_id like concat('%', #{query.fileIdFuzzy}, '%')
+			</if>
+			<if test="query.userIdFuzzy!= null  and query.userIdFuzzy!=''">
+				 and  user_id like concat('%', #{query.userIdFuzzy}, '%')
+			</if>
+			<if test="query.articleIdFuzzy!= null  and query.articleIdFuzzy!=''">
+				 and  article_id like concat('%', #{query.articleIdFuzzy}, '%')
+			</if>
+	 </where>
+	</sql>
+
+	<!-- 查询集合-->
+	<select id="selectList" resultMap="base_result_map" >
+		 SELECT <include refid="base_column_list" /> FROM forum_article_attachment_download <include refid="query_condition" />
+		 <if test="query.orderBy!=null">
+			 order by ${query.orderBy}
+		 </if>
+		 <if test="query.simplePage!=null">
+			 limit #{query.simplePage.start},#{query.simplePage.end}
+		 </if>
+	</select>
+
+	<!-- 查询数量-->
+	<select id="selectCount" resultType="java.lang.Integer" >
+		 SELECT count(1) FROM forum_article_attachment_download <include refid="query_condition" />
+	</select>
+
+	<!-- 插入 （匹配有值的字段）-->
+	<insert id="insert" parameterType="com.easybbs.entity.po.ForumArticleAttachmentDownload">
+		 INSERT INTO forum_article_attachment_download
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="bean.fileId != null">
+				 file_id,
+			</if>
+			<if test="bean.userId != null">
+				 user_id,
+			</if>
+			<if test="bean.articleId != null">
+				 article_id,
+			</if>
+			<if test="bean.downloadCount != null">
+				 download_count,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="bean.fileId!=null">
+				 #{bean.fileId},
+			</if>
+			<if test="bean.userId!=null">
+				 #{bean.userId},
+			</if>
+			<if test="bean.articleId!=null">
+				 #{bean.articleId},
+			</if>
+			<if test="bean.downloadCount!=null">
+				 #{bean.downloadCount},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 插入或者更新 （匹配有值的字段）-->
+	<insert id="insertOrUpdate" parameterType="com.easybbs.entity.po.ForumArticleAttachmentDownload">
+		 INSERT INTO forum_article_attachment_download
+		 <trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.fileId != null">
+				 file_id,
+			</if>
+			<if test="bean.userId != null">
+				 user_id,
+			</if>
+			<if test="bean.articleId != null">
+				 article_id,
+			</if>
+			<if test="bean.downloadCount != null">
+				 download_count,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.fileId!=null">
+				 #{bean.fileId},
+			</if>
+			<if test="bean.userId!=null">
+				 #{bean.userId},
+			</if>
+			<if test="bean.articleId!=null">
+				 #{bean.articleId},
+			</if>
+			<if test="bean.downloadCount!=null">
+				 #{bean.downloadCount},
+			</if>
+		 </trim>
+		 on DUPLICATE key update 
+		 <trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.fileId!=null">
+				 file_id = VALUES(file_id),
+			</if>
+			<if test="bean.userId!=null">
+				 user_id = VALUES(user_id),
+			</if>
+			<if test="bean.articleId!=null">
+				 article_id = VALUES(article_id),
+			</if>
+			<if test="bean.downloadCount!=null">
+				 download_count = VALUES(download_count),
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 添加 （批量插入）-->
+	<insert id="insertBatch" parameterType="com.easybbs.entity.po.ForumArticleAttachmentDownload">
+		 INSERT INTO forum_article_attachment_download(
+			 file_id,
+			 user_id,
+			 article_id,
+			 download_count
+		 )values
+		 <foreach collection="list" item="item" separator=",">
+			 (
+				 #{item.fileId},
+				 #{item.userId},
+				 #{item.articleId},
+				 #{item.downloadCount}
+			 )
+		 </foreach>
+	</insert>
+
+	<!-- 批量新增修改 （批量插入）-->
+	<insert id="insertOrUpdateBatch" parameterType="com.easybbs.entity.po.ForumArticleAttachmentDownload">
+		 INSERT INTO forum_article_attachment_download(
+			 file_id,
+			 user_id,
+			 article_id,
+			 download_count
+		 )values
+		 <foreach collection="list" item="item" separator=",">
+			 (
+				 #{item.fileId},
+				 #{item.userId},
+				 #{item.articleId},
+				 #{item.downloadCount}
+			 )
+		 </foreach>
+			on DUPLICATE key update 
+			file_id = VALUES(file_id),
+			user_id = VALUES(user_id),
+			article_id = VALUES(article_id),
+			download_count = VALUES(download_count)
+	</insert>
+
+	<!--多条件修改-->
+	<update id="updateByParam" parameterType="com.easybbs.entity.query.ForumArticleAttachmentDownloadQuery">
+		 UPDATE forum_article_attachment_download
+ 		 <set> 
+			<if test="bean.fileId != null">
+				 file_id = #{bean.fileId},
+			</if>
+			<if test="bean.userId != null">
+				 user_id = #{bean.userId},
+			</if>
+			<if test="bean.articleId != null">
+				 article_id = #{bean.articleId},
+			</if>
+			<if test="bean.downloadCount != null">
+				 download_count = #{bean.downloadCount},
+			</if>
+ 		 </set>
+ 		 <include refid="query_condition" />
+	</update>
+
+	<!--多条件删除-->
+	<delete id="deleteByParam">
+		 delete from forum_article_attachment_download
+ 		 <include refid="query_condition" />
+	</delete>
+
+	<!-- 根据FileIdAndUserId修改-->
+	<update id="updateByFileIdAndUserId" parameterType="com.easybbs.entity.po.ForumArticleAttachmentDownload">
+		 UPDATE forum_article_attachment_download
+ 		 <set> 
+			<if test="bean.articleId != null">
+				 article_id = #{bean.articleId},
+			</if>
+			<if test="bean.downloadCount != null">
+				 download_count = #{bean.downloadCount},
+			</if>
+ 		 </set>
+ 		 where file_id=#{fileId} and user_id=#{userId}
+	</update>
+
+	<!-- 根据FileIdAndUserId删除-->
+	<delete id="deleteByFileIdAndUserId">
+		delete from forum_article_attachment_download where file_id=#{fileId} and user_id=#{userId}
+	</delete>
+
+	<!-- 根据PrimaryKey获取对象-->
+	<select id="selectByFileIdAndUserId" resultMap="base_result_map" >
+		select <include refid="base_column_list" /> from forum_article_attachment_download where file_id=#{fileId} and user_id=#{userId}
+	</select>
+
+</mapper>
