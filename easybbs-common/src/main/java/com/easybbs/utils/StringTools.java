@@ -1,5 +1,7 @@
 package com.easybbs.utils;
 import com.easybbs.exception.BusinessException;
+import org.apache.commons.lang3.RandomStringUtils;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -49,5 +51,9 @@ public class StringTools {
             return true;
         }
         return false;
+    }
+
+    public static String getRandomNumber(Integer count) {
+        return RandomStringUtils.random(count, false, true);
     }
 }

@@ -1,9 +1,19 @@
 package com.easybbs.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.mail.internet.MimeMessage;
 
+import com.easybbs.constants.Constants;
+import com.easybbs.entity.config.WebConfig;
+import com.easybbs.entity.po.UserInfo;
+import com.easybbs.entity.query.UserInfoQuery;
+import com.easybbs.exception.BusinessException;
+import com.easybbs.mappers.UserInfoMapper;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.easybbs.entity.enums.PageSize;
@@ -24,6 +34,16 @@ public class EmailCodeServiceImpl implements EmailCodeService {
 
 	@Resource
 	private EmailCodeMapper<EmailCode, EmailCodeQuery> emailCodeMapper;
+
+	@Resource
+	private UserInfoMapper<UserInfo, UserInfoQuery> userInfoMapper;
+
+	@Resource
+	private JavaMailSender javaMailSender;
+
+	@Resource
+	private WebConfig webConfig;
+
 
 	/**
 	 * 根据条件查询列表
@@ -126,5 +146,48 @@ public class EmailCodeServiceImpl implements EmailCodeService {
 	@Override
 	public Integer deleteEmailCodeByEmailAndCode(String email, String code) {
 		return this.emailCodeMapper.deleteByEmailAndCode(email, code);
+	}
+
+	@Override
+	public void sendEmailCode(String email, Integer type) {
+		if(type == Constants.TWO) {
+			UserInfo userInfo = userInfoMapper.selectByEmail(email);
+			if(userInfo != null) {
+				throw new BusinessException("邮箱已存在");
+			}
+		}
+		EmailCode selectByEmail = emailCodeMapper.selectByEmail(email);
+
+		String code = StringTools.getRandomNumber(Constants.LENGTH_5);
+		sendEmail(email, code);
+
+		EmailCode emailCode = new EmailCode();
+		emailCode.setCode(code);
+		emailCode.setEmail(email);
+		emailCode.setCreateTime(new Date());
+		emailCode.setStatus(Constants.ZERO);
+
+		if(selectByEmail != null) {
+			emailCodeMapper.updateByEmail(emailCode);
+		}else{
+			emailCodeMapper.insert(emailCode);
+		}
+	}
+
+	public void sendEmail(String email, String code) {
+		try{
+			MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+			mimeMessageHelper.setFrom(webConfig.getSendUserName());
+			mimeMessageHelper.setTo(email);
+			mimeMessageHelper.setSubject("注册邮箱验证码");
+			mimeMessageHelper.setText("邮箱验证码为：" + code);
+			mimeMessageHelper.setSentDate(new Date());
+			javaMailSender.send(mimeMessage);
+
+		}catch (Exception e) {
+			throw new BusinessException("邮件发送失败");
+		}
 	}
 }

@@ -239,6 +239,22 @@
  		 where email=#{email} and code=#{code}
 	</update>
 
+	<update id="updateByEmail" parameterType="com.easybbs.entity.po.EmailCode">
+		UPDATE email_code
+		<set>
+			<if test="bean.code != null">
+				code = #{code},
+			</if>
+			<if test="bean.createTime != null">
+				create_time = #{bean.createTime},
+			</if>
+			<if test="bean.status != null">
+				status = #{bean.status},
+			</if>
+		</set>
+		where email=#{bean.email}
+ 	</update>
+
 	<!-- 根据EmailAndCode删除-->
 	<delete id="deleteByEmailAndCode">
 		delete from email_code where email=#{email} and code=#{code}
@@ -247,6 +263,9 @@
 	<!-- 根据PrimaryKey获取对象-->
 	<select id="selectByEmailAndCode" resultMap="base_result_map" >
 		select <include refid="base_column_list" /> from email_code where email=#{email} and code=#{code}
+	</select>
+    <select id="selectByEmail" resultMap="base_result_map">
+		select <include refid="base_column_list" /> from email_code where email=#{email}
 	</select>
 
 </mapper>
