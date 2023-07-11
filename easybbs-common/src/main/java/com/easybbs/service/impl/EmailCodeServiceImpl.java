@@ -190,4 +190,17 @@ public class EmailCodeServiceImpl implements EmailCodeService {
 			throw new BusinessException("邮件发送失败");
 		}
 	}
+
+	@Override
+	public void checkCode(String email, String code) {
+		EmailCode emailCode = emailCodeMapper.selectByEmailAndCode(email, code);
+		if(emailCode == null) {
+			throw new BusinessException("邮箱验证码错误");
+		}
+		if(emailCode.getStatus() == 1 || (System.currentTimeMillis() - emailCode.getCreateTime().getTime()) > Constants.LENGTH_15 * 1000 * 60) {
+			emailCodeMapper.updateStatusByEmailAndCode(email, code, Constants.ONE);
+			throw new BusinessException("邮箱验证码已失效");
+		}
+		emailCodeMapper.updateStatusByEmailAndCode(email, code, Constants.ONE);
+	}
 }

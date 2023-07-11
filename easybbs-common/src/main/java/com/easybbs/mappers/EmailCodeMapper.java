@@ -28,4 +28,6 @@ public interface EmailCodeMapper<T, P> extends BaseMapper<T, P> {
     T selectByEmail(@Param("email") String email);
 
     void updateByEmail(@Param("bean") T emailCode);
+
+    void updateStatusByEmailAndCode(@Param("email") String email, @Param("code") String code, @Param("status") Integer status);
 }

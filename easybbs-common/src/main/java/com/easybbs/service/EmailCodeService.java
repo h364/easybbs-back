@@ -70,4 +70,6 @@ public interface EmailCodeService {
 	Integer deleteEmailCodeByEmailAndCode(String email,String code);
 
     void sendEmailCode(String email, Integer type);
+
+    void checkCode(String email, String emailCode);
 }

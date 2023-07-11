@@ -243,7 +243,7 @@
 		UPDATE email_code
 		<set>
 			<if test="bean.code != null">
-				code = #{code},
+				code = #{bean.code},
 			</if>
 			<if test="bean.createTime != null">
 				create_time = #{bean.createTime},
@@ -255,7 +255,11 @@
 		where email=#{bean.email}
  	</update>
 
-	<!-- 根据EmailAndCode删除-->
+    <update id="updateStatusByEmailAndCode" parameterType="com.easybbs.entity.po.EmailCode">
+		update email_code set status=#{status} where email=#{email} and code=#{code}
+	</update>
+
+    <!-- 根据EmailAndCode删除-->
 	<delete id="deleteByEmailAndCode">
 		delete from email_code where email=#{email} and code=#{code}
 	</delete>
