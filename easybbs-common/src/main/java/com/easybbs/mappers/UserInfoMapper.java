@@ -61,4 +61,5 @@ public interface UserInfoMapper<T,P> extends BaseMapper<T,P> {
 	 T selectByNickName(@Param("nickName") String nickName);
 
 
+    Integer updateIntegral(@Param("UserId") String userId, @Param("integral") Integer integral);
 }

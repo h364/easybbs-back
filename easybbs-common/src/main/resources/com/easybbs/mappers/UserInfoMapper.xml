@@ -651,8 +651,16 @@
  		 </set>
  		 where nick_name=#{nickName}
 	</update>
+    <update id="updateIntegral">
+		update user_integral_record set current_integral = current_integral + #{integral}
+		<if test="integral > 0">
+			,total_integral = total_integral + #{integral}
+		</if>
+		where user_id = #{userId}
+		<![CDATA[ and current_integral + #{current_integral} >= 0 ]]>
+	</update>
 
-	<!-- 根据NickName删除-->
+    <!-- 根据NickName删除-->
 	<delete id="deleteByNickName">
 		delete from user_info where nick_name=#{nickName}
 	</delete>

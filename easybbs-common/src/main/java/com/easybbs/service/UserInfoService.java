@@ -2,6 +2,7 @@ package com.easybbs.service;
 
 import java.util.List;
 
+import com.easybbs.entity.enums.UserIntegralOperTypeEnum;
 import com.easybbs.entity.query.UserInfoQuery;
 import com.easybbs.entity.po.UserInfo;
 import com.easybbs.entity.vo.PaginationResultVO;
@@ -106,4 +107,6 @@ public interface UserInfoService {
 	Integer deleteUserInfoByNickName(String nickName);
 
     void register(String email, String emailCode, String nickname, String password);
+
+	void updateUserIntegral(String userId, UserIntegralOperTypeEnum operTypeEnum, Integer changeType, Integer integral);
 }

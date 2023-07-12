@@ -65,9 +65,9 @@ public class AccountController extends ABaseController {
     @RequestMapping("/register")
     @GlobalInterceptor(checkParams = true)
     public ResponseVO register(HttpSession session,
-                               @VerifyParam(required = true) String email,
+                               @VerifyParam(required = true, regex = VerifyRegexEnum.EMAIL) String email,
                                @VerifyParam(required = true) String emailCode,
-                               @VerifyParam(required = true) String nickname,
+                               @VerifyParam(required = true, max = 20) String nickname,
                                @VerifyParam(required = true, regex = VerifyRegexEnum.PASSWORD) String password,
                                @VerifyParam(required = true) String checkCode) {
         try {

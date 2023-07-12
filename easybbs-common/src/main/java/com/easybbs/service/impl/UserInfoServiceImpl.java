@@ -6,14 +6,17 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.easybbs.constants.Constants;
-import com.easybbs.entity.enums.UserStatusEnum;
+import com.easybbs.entity.enums.*;
+import com.easybbs.entity.po.UserIntegralRecord;
 import com.easybbs.entity.po.UserMessage;
+import com.easybbs.entity.query.UserIntegralRecordQuery;
 import com.easybbs.exception.BusinessException;
+import com.easybbs.mappers.UserIntegralRecordMapper;
 import com.easybbs.mappers.UserMessageMapper;
 import com.easybbs.service.EmailCodeService;
+import com.easybbs.utils.SysCacheUtils;
 import org.springframework.stereotype.Service;
 
-import com.easybbs.entity.enums.PageSize;
 import com.easybbs.entity.query.UserInfoQuery;
 import com.easybbs.entity.po.UserInfo;
 import com.easybbs.entity.vo.PaginationResultVO;
@@ -38,6 +41,9 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Resource
     private UserMessageMapper userMessageMapper;
+
+    @Resource
+    private UserIntegralRecordMapper<UserIntegralRecord, UserIntegralRecordQuery> userIntegralRecordMapper;
 
     /**
      * 根据条件查询列表
@@ -218,8 +224,36 @@ public class UserInfoServiceImpl implements UserInfoService {
         userInfoMapper.insert(userInfo);
 
         //更新用户积分
-
+        updateUserIntegral(userId, UserIntegralOperTypeEnum.REGISTER, UserIntegralChangeTypeEnum.ADD.getChangeType(), Constants.INTEGRAL);
         //记录消息
+        UserMessage userMessage = new UserMessage();
+        userMessage.setReceivedUserId(userId);
+        userMessage.setMessageType(MessageStatusEnum.NO_READ.getStatus());
+        userMessage.setMessageContent(SysCacheUtils.getSysSetting().getRegisterSetting().getRegisterWelcomeInfo());
+        userMessageMapper.insert(userMessage);
+    }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateUserIntegral(String userId, UserIntegralOperTypeEnum operTypeEnum, Integer changeType, Integer integral) {
+        integral = changeType * integral;
+        if (integral == 0) {
+            return;
+        }
+        UserInfo userInfo = userInfoMapper.selectByUserId(userId);
+        if (UserIntegralChangeTypeEnum.REDUCE.getChangeType().equals(changeType) && userInfo.getCurrentIntegral() + integral < 0) {
+            integral = changeType * userInfo.getCurrentIntegral();
+        }
+        UserIntegralRecord record = new UserIntegralRecord();
+        record.setUserId(userId);
+        record.setIntegral(integral);
+        record.setCreateTime(new Date());
+        record.setOperType(operTypeEnum.getOperType());
+        userIntegralRecordMapper.insert(record);
+
+        Integer count = userInfoMapper.updateIntegral(userId, integral);
+        if (count == 0) {
+            throw new BusinessException("更新用户积分失败");
+        }
     }
 }
