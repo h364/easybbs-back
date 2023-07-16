@@ -293,7 +293,6 @@ public class UserInfoServiceImpl implements UserInfoService {
         } else {
             webDto.setAdmin(false);
         }
-        log.info("ip:{},address:{}", ip, ipAddress);
         return webDto;
     }
 

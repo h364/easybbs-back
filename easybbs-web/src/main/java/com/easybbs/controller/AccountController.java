@@ -5,11 +5,14 @@ import com.easybbs.anotation.VerifyParam;
 import com.easybbs.constants.Constants;
 import com.easybbs.dto.CreateImageCode;
 import com.easybbs.dto.SessionWebUserDto;
+import com.easybbs.dto.SysSetting4CommentDto;
+import com.easybbs.dto.SysSettingDto;
 import com.easybbs.entity.enums.VerifyRegexEnum;
 import com.easybbs.entity.vo.ResponseVO;
 import com.easybbs.exception.BusinessException;
 import com.easybbs.service.EmailCodeService;
 import com.easybbs.service.UserInfoService;
+import com.easybbs.utils.SysCacheUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/user")
@@ -104,9 +108,33 @@ public class AccountController extends ABaseController {
     }
 
     @RequestMapping("/getUserInfo")
-    @GlobalInterceptor(checkParams = true)
+    @GlobalInterceptor()
     public ResponseVO getUserInfo(HttpSession session) {
         SessionWebUserDto webUserDto = getUserInfoFromSession(session);
         return getSuccessResponseVO(webUserDto);
+    }
+
+    @RequestMapping("/logout")
+    @GlobalInterceptor()
+    public ResponseVO logout(HttpSession session) {
+        session.invalidate();
+        return getSuccessResponseVO(null);
+    }
+
+    @RequestMapping("/getSysSetting")
+    @GlobalInterceptor()
+    public ResponseVO getSysSetting() {
+        SysSettingDto settingDto = SysCacheUtils.getSysSetting();
+        SysSetting4CommentDto commentDto = settingDto.getCommentSetting();
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("commentOpen", commentDto.getCommentOpen());
+        return getSuccessResponseVO(result);
+    }
+
+    @RequestMapping("/resetPwd")
+    @GlobalInterceptor(checkParams = true)
+    public ResponseVO resetPwd(HttpSession session, String email) {
+        session.invalidate();
+        return getSuccessResponseVO(null);
     }
 }
