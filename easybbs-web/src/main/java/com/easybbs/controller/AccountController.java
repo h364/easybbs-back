@@ -4,6 +4,7 @@ import com.easybbs.anotation.GlobalInterceptor;
 import com.easybbs.anotation.VerifyParam;
 import com.easybbs.constants.Constants;
 import com.easybbs.dto.CreateImageCode;
+import com.easybbs.dto.SessionWebUserDto;
 import com.easybbs.entity.enums.VerifyRegexEnum;
 import com.easybbs.entity.vo.ResponseVO;
 import com.easybbs.exception.BusinessException;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -79,5 +81,32 @@ public class AccountController extends ABaseController {
         } finally {
             session.removeAttribute(Constants.CHECK_CODE_KEY);
         }
+    }
+
+    @RequestMapping("/login")
+    @GlobalInterceptor(checkParams = true)
+    public ResponseVO login(HttpSession session,
+                            HttpServletRequest request,
+                            @VerifyParam(required = true) String email,
+                            @VerifyParam(required = true) String password,
+                            @VerifyParam(required = true) String checkCode) {
+        try {
+            if (!checkCode.equalsIgnoreCase((String) session.getAttribute(Constants.CHECK_CODE_KEY))) {
+                throw new BusinessException("验证码错误");
+            }
+            String ip = getIpAddr(request);
+            SessionWebUserDto webDto = userInfoService.login(email, password, ip);
+            session.setAttribute(Constants.SESSION_KEY, webDto);
+            return getSuccessResponseVO(null);
+        } finally {
+            session.removeAttribute(Constants.CHECK_CODE_KEY);
+        }
+    }
+
+    @RequestMapping("/getUserInfo")
+    @GlobalInterceptor(checkParams = true)
+    public ResponseVO getUserInfo(HttpSession session) {
+        SessionWebUserDto webUserDto = getUserInfoFromSession(session);
+        return getSuccessResponseVO(webUserDto);
     }
 }

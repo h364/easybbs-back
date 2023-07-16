@@ -1,11 +1,15 @@
 package com.easybbs.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import com.easybbs.constants.Constants;
+import com.easybbs.dto.SessionWebUserDto;
+import com.easybbs.entity.config.WebConfig;
 import com.easybbs.entity.enums.*;
 import com.easybbs.entity.po.UserIntegralRecord;
 import com.easybbs.entity.po.UserMessage;
@@ -14,7 +18,10 @@ import com.easybbs.exception.BusinessException;
 import com.easybbs.mappers.UserIntegralRecordMapper;
 import com.easybbs.mappers.UserMessageMapper;
 import com.easybbs.service.EmailCodeService;
+import com.easybbs.utils.JsonUtils;
+import com.easybbs.utils.OKHttpUtils;
 import com.easybbs.utils.SysCacheUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.easybbs.entity.query.UserInfoQuery;
@@ -30,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * 用户信息 业务接口实现
  */
+@Slf4j
 @Service("userInfoService")
 public class UserInfoServiceImpl implements UserInfoService {
 
@@ -44,6 +52,9 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Resource
     private UserIntegralRecordMapper<UserIntegralRecord, UserIntegralRecordQuery> userIntegralRecordMapper;
+
+    @Resource
+    private WebConfig webConfig;
 
     /**
      * 根据条件查询列表
@@ -255,5 +266,50 @@ public class UserInfoServiceImpl implements UserInfoService {
         if (count == 0) {
             throw new BusinessException("更新用户积分失败");
         }
+    }
+
+    @Override
+    public SessionWebUserDto login(String email, String password, String ip) {
+        UserInfo userInfo = userInfoMapper.selectByEmail(email);
+        if (userInfo == null || !password.equals(userInfo.getPassword())) {
+            throw new BusinessException("账号或密码错误");
+        }
+        if (UserStatusEnum.DISABLE.getStatus().equals(userInfo.getStatus())) {
+            throw new BusinessException("账号已禁用");
+        }
+        String ipAddress = getIpAddress(ip);
+        UserInfo updateInfo = new UserInfo();
+        updateInfo.setLastLoginTime(new Date());
+        updateInfo.setLastLoginIp(ip);
+        updateInfo.setLastLoginIpAddress(ipAddress);
+        userInfoMapper.updateByUserId(updateInfo, userInfo.getUserId());
+
+        SessionWebUserDto webDto = new SessionWebUserDto();
+        webDto.setUserId(userInfo.getUserId());
+        webDto.setNickname(userInfo.getNickName());
+        webDto.setProvince(ipAddress);
+        if (!StringTools.isEmpty(webConfig.getAdminEmail()) && webConfig.getAdminEmail().equals(userInfo.getEmail())) {
+            webDto.setAdmin(true);
+        } else {
+            webDto.setAdmin(false);
+        }
+        log.info("ip:{},address:{}", ip, ipAddress);
+        return webDto;
+    }
+
+    private final String getIpAddress(String ip) {
+        Map<String, String> addressInfo = new HashMap<>();
+        try {
+            String url = "http://whois.pconline.com.cn/ipJson.jsp?json=true&ip=" + ip;
+            String responseJson = OKHttpUtils.getRequest(url);
+            if (StringTools.isEmpty(responseJson)) {
+                return Constants.NO_ADDRESS;
+            }
+            addressInfo = JsonUtils.convertJson2Obj(responseJson, Map.class);
+            return addressInfo.get("pro");
+        } catch (Exception e) {
+            log.error("获取ip所在地失败");
+        }
+        return Constants.NO_ADDRESS;
     }
 }

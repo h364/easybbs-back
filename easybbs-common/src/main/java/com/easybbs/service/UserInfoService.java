@@ -2,6 +2,7 @@ package com.easybbs.service;
 
 import java.util.List;
 
+import com.easybbs.dto.SessionWebUserDto;
 import com.easybbs.entity.enums.UserIntegralOperTypeEnum;
 import com.easybbs.entity.query.UserInfoQuery;
 import com.easybbs.entity.po.UserInfo;
@@ -109,4 +110,6 @@ public interface UserInfoService {
     void register(String email, String emailCode, String nickname, String password);
 
 	void updateUserIntegral(String userId, UserIntegralOperTypeEnum operTypeEnum, Integer changeType, Integer integral);
+
+    SessionWebUserDto login(String email, String password, String ip);
 }

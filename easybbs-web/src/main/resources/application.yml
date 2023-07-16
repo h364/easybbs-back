@@ -16,7 +16,12 @@ spring:
     default-encoding: utf-8
     port: 587
 
-  mybatis:
-    configuration:
-      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    mapper-locations: classpath:mappers/*.xml
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mappers/*.xml
+
+admin:
+  email: admin@qq.com
+  account: admin
+  password: admin

@@ -651,13 +651,13 @@
  		 </set>
  		 where nick_name=#{nickName}
 	</update>
-    <update id="updateIntegral">
-		update user_integral_record set current_integral = current_integral + #{integral}
+    <update id="updateIntegral" parameterType="com.easybbs.entity.po.UserInfo">
+		update user_info set current_integral = current_integral + #{integral}
 		<if test="integral > 0">
 			,total_integral = total_integral + #{integral}
 		</if>
 		where user_id = #{userId}
-		<![CDATA[ and current_integral + #{current_integral} >= 0 ]]>
+		<![CDATA[ and current_integral + #{integral} >= 0 ]]>
 	</update>
 
     <!-- 根据NickName删除-->
