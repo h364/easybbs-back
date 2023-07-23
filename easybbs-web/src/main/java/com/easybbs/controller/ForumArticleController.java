@@ -8,21 +8,19 @@ import com.easybbs.entity.enums.ArticleOrderTypeEnum;
 import com.easybbs.entity.enums.ArticleStatusEnum;
 import com.easybbs.entity.enums.OperRecordOpTypeEnum;
 import com.easybbs.entity.enums.ResponseCodeEnum;
-import com.easybbs.entity.po.ForumArticle;
-import com.easybbs.entity.po.ForumArticleAttachment;
-import com.easybbs.entity.po.LikeRecord;
+import com.easybbs.entity.po.*;
 import com.easybbs.entity.query.ForumArticleAttachmentQuery;
 import com.easybbs.entity.query.ForumArticleQuery;
 import com.easybbs.entity.vo.*;
 import com.easybbs.exception.BusinessException;
-import com.easybbs.service.ForumArticleAttachmentService;
-import com.easybbs.service.ForumArticleService;
-import com.easybbs.service.LikeRecordService;
+import com.easybbs.service.*;
 import com.easybbs.utils.CopyTools;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -38,6 +36,12 @@ public class ForumArticleController extends ABaseController {
 
     @Resource
     private ForumArticleAttachmentService forumArticleAttachmentService;
+
+    @Resource
+    private UserInfoService userInfoService;
+
+    @Resource
+    private ForumArticleAttachmentDownloadService forumArticleAttachmentDownloadService;
 
     @RequestMapping("/loadArticle")
     @GlobalInterceptor(checkParams = true)
@@ -100,6 +104,28 @@ public class ForumArticleController extends ABaseController {
     public ResponseVO doLike(HttpSession session, @VerifyParam(required = true) String articleId) {
         SessionWebUserDto webUserDto = getUserInfoFromSession(session);
         likeRecordService.doLike(articleId, webUserDto.getUserId(), webUserDto.getNickname(), OperRecordOpTypeEnum.ARTICLE_LIKE);
+        return getSuccessResponseVO(null);
+    }
+
+    @RequestMapping("/getUserDownLoadInfo")
+    @GlobalInterceptor(checkParams = true, checkLogin = true)
+    public ResponseVO getUserDownLoadInfo(HttpSession session, @VerifyParam(required = true) String fileId) {
+        SessionWebUserDto webUserDto = getUserInfoFromSession(session);
+        UserInfo userInfo = userInfoService.getUserInfoByUserId(webUserDto.getUserId());
+        UserDownLoadVO userDownLoadVO = new UserDownLoadVO();
+        userDownLoadVO.setUserIntegral(userInfo.getCurrentIntegral());
+        ForumArticleAttachmentDownload attachmentDownload = forumArticleAttachmentDownloadService.getForumArticleAttachmentDownloadByFileIdAndUserId(fileId, webUserDto.getUserId());
+        if (attachmentDownload != null) {
+            userDownLoadVO.setHaveDownLoad(true);
+        }
+        return getSuccessResponseVO(userDownLoadVO);
+    }
+
+    @RequestMapping("/attachmentDownLoad")
+    @GlobalInterceptor(checkParams = true, checkLogin = true)
+    public ResponseVO attachmentDownLoad(HttpSession session, HttpServletRequest request, HttpServletResponse response, @VerifyParam(required = true) String fileId) {
+        SessionWebUserDto userDto = getUserInfoFromSession(session);
+        forumArticleAttachmentDownloadService.attachmentDownLoad(request, response, fileId, userDto);
         return getSuccessResponseVO(null);
     }
 

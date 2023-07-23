@@ -25,3 +25,6 @@ admin:
   email: admin@qq.com
   account: admin
   password: admin
+
+project:
+  folder: f:/webSer/myApps/easybbs/

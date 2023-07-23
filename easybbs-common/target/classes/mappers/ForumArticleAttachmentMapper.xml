@@ -1,414 +1,428 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.easybbs.mappers.ForumArticleAttachmentMapper">
 
-	<!--实体映射-->
-	<resultMap id="base_result_map" type="com.easybbs.entity.po.ForumArticleAttachment">
-		<!--文件ID-->
-		<result column="file_id" property="fileId"  />
-		<!--文章ID-->
-		<result column="article_id" property="articleId"  />
-		<!--用户id-->
-		<result column="user_id" property="userId"  />
-		<!--文件大小-->
-		<result column="file_size" property="fileSize"  />
-		<!--文件名称-->
-		<result column="file_name" property="fileName"  />
-		<!--下载次数-->
-		<result column="download_count" property="downloadCount"  />
-		<!--文件路径-->
-		<result column="file_path" property="filePath"  />
-		<!--文件类型-->
-		<result column="file_type" property="fileType"  />
-		<!--下载所需积分-->
-		<result column="integral" property="integral"  />
-	</resultMap>
+    <!--实体映射-->
+    <resultMap id="base_result_map" type="com.easybbs.entity.po.ForumArticleAttachment">
+        <!--文件ID-->
+        <result column="file_id" property="fileId"/>
+        <!--文章ID-->
+        <result column="article_id" property="articleId"/>
+        <!--用户id-->
+        <result column="user_id" property="userId"/>
+        <!--文件大小-->
+        <result column="file_size" property="fileSize"/>
+        <!--文件名称-->
+        <result column="file_name" property="fileName"/>
+        <!--下载次数-->
+        <result column="download_count" property="downloadCount"/>
+        <!--文件路径-->
+        <result column="file_path" property="filePath"/>
+        <!--文件类型-->
+        <result column="file_type" property="fileType"/>
+        <!--下载所需积分-->
+        <result column="integral" property="integral"/>
+    </resultMap>
 
 
-	<!-- 通用查询结果列-->
-	<sql id="base_column_list">
-		 file_id,article_id,user_id,file_size,file_name,
+    <!-- 通用查询结果列-->
+    <sql id="base_column_list">
+        file_id
+        ,article_id,user_id,file_size,file_name,
 		 download_count,file_path,file_type,integral
-	</sql>
+    </sql>
 
-	<sql id="base_condition_filed">
-			<if test="query.fileId != null and query.fileId!=''">
-				 and  file_id = #{query.fileId}
-			</if>
-			<if test="query.articleId != null and query.articleId!=''">
-				 and  article_id = #{query.articleId}
-			</if>
-			<if test="query.userId != null and query.userId!=''">
-				 and  user_id = #{query.userId}
-			</if>
-			<if test="query.fileSize != null">
-				 and  file_size = #{query.fileSize}
-			</if>
-			<if test="query.fileName != null and query.fileName!=''">
-				 and  file_name = #{query.fileName}
-			</if>
-			<if test="query.downloadCount != null">
-				 and  download_count = #{query.downloadCount}
-			</if>
-			<if test="query.filePath != null and query.filePath!=''">
-				 and  file_path = #{query.filePath}
-			</if>
-			<if test="query.fileType != null">
-				 and  file_type = #{query.fileType}
-			</if>
-			<if test="query.integral != null">
-				 and  integral = #{query.integral}
-			</if>
-	</sql>
-	<!-- 通用条件列-->
-	<sql id="base_condition">
-	 <where>
-		 <include refid="base_condition_filed" />
-	 </where>
-	</sql>
+    <sql id="base_condition_filed">
+        <if test="query.fileId != null and query.fileId!=''">
+            and file_id = #{query.fileId}
+        </if>
+        <if test="query.articleId != null and query.articleId!=''">
+            and article_id = #{query.articleId}
+        </if>
+        <if test="query.userId != null and query.userId!=''">
+            and user_id = #{query.userId}
+        </if>
+        <if test="query.fileSize != null">
+            and file_size = #{query.fileSize}
+        </if>
+        <if test="query.fileName != null and query.fileName!=''">
+            and file_name = #{query.fileName}
+        </if>
+        <if test="query.downloadCount != null">
+            and download_count = #{query.downloadCount}
+        </if>
+        <if test="query.filePath != null and query.filePath!=''">
+            and file_path = #{query.filePath}
+        </if>
+        <if test="query.fileType != null">
+            and file_type = #{query.fileType}
+        </if>
+        <if test="query.integral != null">
+            and integral = #{query.integral}
+        </if>
+    </sql>
+    <!-- 通用条件列-->
+    <sql id="base_condition">
+        <where>
+            <include refid="base_condition_filed"/>
+        </where>
+    </sql>
 
-	<!-- 通用查询条件列-->
-	<sql id="query_condition">
-	 <where>
-			<include refid="base_condition_filed" />
-			<if test="query.fileIdFuzzy!= null  and query.fileIdFuzzy!=''">
-				 and  file_id like concat('%', #{query.fileIdFuzzy}, '%')
-			</if>
-			<if test="query.articleIdFuzzy!= null  and query.articleIdFuzzy!=''">
-				 and  article_id like concat('%', #{query.articleIdFuzzy}, '%')
-			</if>
-			<if test="query.userIdFuzzy!= null  and query.userIdFuzzy!=''">
-				 and  user_id like concat('%', #{query.userIdFuzzy}, '%')
-			</if>
-			<if test="query.fileNameFuzzy!= null  and query.fileNameFuzzy!=''">
-				 and  file_name like concat('%', #{query.fileNameFuzzy}, '%')
-			</if>
-			<if test="query.filePathFuzzy!= null  and query.filePathFuzzy!=''">
-				 and  file_path like concat('%', #{query.filePathFuzzy}, '%')
-			</if>
-	 </where>
-	</sql>
+    <!-- 通用查询条件列-->
+    <sql id="query_condition">
+        <where>
+            <include refid="base_condition_filed"/>
+            <if test="query.fileIdFuzzy!= null  and query.fileIdFuzzy!=''">
+                and file_id like concat('%', #{query.fileIdFuzzy}, '%')
+            </if>
+            <if test="query.articleIdFuzzy!= null  and query.articleIdFuzzy!=''">
+                and article_id like concat('%', #{query.articleIdFuzzy}, '%')
+            </if>
+            <if test="query.userIdFuzzy!= null  and query.userIdFuzzy!=''">
+                and user_id like concat('%', #{query.userIdFuzzy}, '%')
+            </if>
+            <if test="query.fileNameFuzzy!= null  and query.fileNameFuzzy!=''">
+                and file_name like concat('%', #{query.fileNameFuzzy}, '%')
+            </if>
+            <if test="query.filePathFuzzy!= null  and query.filePathFuzzy!=''">
+                and file_path like concat('%', #{query.filePathFuzzy}, '%')
+            </if>
+        </where>
+    </sql>
 
-	<!-- 查询集合-->
-	<select id="selectList" resultMap="base_result_map" >
-		 SELECT <include refid="base_column_list" /> FROM forum_article_attachment <include refid="query_condition" />
-		 <if test="query.orderBy!=null">
-			 order by ${query.orderBy}
-		 </if>
-		 <if test="query.simplePage!=null">
-			 limit #{query.simplePage.start},#{query.simplePage.end}
-		 </if>
-	</select>
+    <!-- 查询集合-->
+    <select id="selectList" resultMap="base_result_map">
+        SELECT
+        <include refid="base_column_list"/>
+        FROM forum_article_attachment
+        <include refid="query_condition"/>
+        <if test="query.orderBy!=null">
+            order by ${query.orderBy}
+        </if>
+        <if test="query.simplePage!=null">
+            limit #{query.simplePage.start},#{query.simplePage.end}
+        </if>
+    </select>
 
-	<!-- 查询数量-->
-	<select id="selectCount" resultType="java.lang.Integer" >
-		 SELECT count(1) FROM forum_article_attachment <include refid="query_condition" />
-	</select>
+    <!-- 查询数量-->
+    <select id="selectCount" resultType="java.lang.Integer">
+        SELECT count(1) FROM forum_article_attachment
+        <include refid="query_condition"/>
+    </select>
 
-	<!-- 插入 （匹配有值的字段）-->
-	<insert id="insert" parameterType="com.easybbs.entity.po.ForumArticleAttachment">
-		 INSERT INTO forum_article_attachment
-		 <trim prefix="(" suffix=")" suffixOverrides="," >
-			<if test="bean.fileId != null">
-				 file_id,
-			</if>
-			<if test="bean.articleId != null">
-				 article_id,
-			</if>
-			<if test="bean.userId != null">
-				 user_id,
-			</if>
-			<if test="bean.fileSize != null">
-				 file_size,
-			</if>
-			<if test="bean.fileName != null">
-				 file_name,
-			</if>
-			<if test="bean.downloadCount != null">
-				 download_count,
-			</if>
-			<if test="bean.filePath != null">
-				 file_path,
-			</if>
-			<if test="bean.fileType != null">
-				 file_type,
-			</if>
-			<if test="bean.integral != null">
-				 integral,
-			</if>
-		 </trim>
-		 <trim prefix="values (" suffix=")" suffixOverrides="," >
-			<if test="bean.fileId!=null">
-				 #{bean.fileId},
-			</if>
-			<if test="bean.articleId!=null">
-				 #{bean.articleId},
-			</if>
-			<if test="bean.userId!=null">
-				 #{bean.userId},
-			</if>
-			<if test="bean.fileSize!=null">
-				 #{bean.fileSize},
-			</if>
-			<if test="bean.fileName!=null">
-				 #{bean.fileName},
-			</if>
-			<if test="bean.downloadCount!=null">
-				 #{bean.downloadCount},
-			</if>
-			<if test="bean.filePath!=null">
-				 #{bean.filePath},
-			</if>
-			<if test="bean.fileType!=null">
-				 #{bean.fileType},
-			</if>
-			<if test="bean.integral!=null">
-				 #{bean.integral},
-			</if>
-		 </trim>
-	</insert>
+    <!-- 插入 （匹配有值的字段）-->
+    <insert id="insert" parameterType="com.easybbs.entity.po.ForumArticleAttachment">
+        INSERT INTO forum_article_attachment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bean.fileId != null">
+                file_id,
+            </if>
+            <if test="bean.articleId != null">
+                article_id,
+            </if>
+            <if test="bean.userId != null">
+                user_id,
+            </if>
+            <if test="bean.fileSize != null">
+                file_size,
+            </if>
+            <if test="bean.fileName != null">
+                file_name,
+            </if>
+            <if test="bean.downloadCount != null">
+                download_count,
+            </if>
+            <if test="bean.filePath != null">
+                file_path,
+            </if>
+            <if test="bean.fileType != null">
+                file_type,
+            </if>
+            <if test="bean.integral != null">
+                integral,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bean.fileId!=null">
+                #{bean.fileId},
+            </if>
+            <if test="bean.articleId!=null">
+                #{bean.articleId},
+            </if>
+            <if test="bean.userId!=null">
+                #{bean.userId},
+            </if>
+            <if test="bean.fileSize!=null">
+                #{bean.fileSize},
+            </if>
+            <if test="bean.fileName!=null">
+                #{bean.fileName},
+            </if>
+            <if test="bean.downloadCount!=null">
+                #{bean.downloadCount},
+            </if>
+            <if test="bean.filePath!=null">
+                #{bean.filePath},
+            </if>
+            <if test="bean.fileType!=null">
+                #{bean.fileType},
+            </if>
+            <if test="bean.integral!=null">
+                #{bean.integral},
+            </if>
+        </trim>
+    </insert>
 
-	<!-- 插入或者更新 （匹配有值的字段）-->
-	<insert id="insertOrUpdate" parameterType="com.easybbs.entity.po.ForumArticleAttachment">
-		 INSERT INTO forum_article_attachment
-		 <trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="bean.fileId != null">
-				 file_id,
-			</if>
-			<if test="bean.articleId != null">
-				 article_id,
-			</if>
-			<if test="bean.userId != null">
-				 user_id,
-			</if>
-			<if test="bean.fileSize != null">
-				 file_size,
-			</if>
-			<if test="bean.fileName != null">
-				 file_name,
-			</if>
-			<if test="bean.downloadCount != null">
-				 download_count,
-			</if>
-			<if test="bean.filePath != null">
-				 file_path,
-			</if>
-			<if test="bean.fileType != null">
-				 file_type,
-			</if>
-			<if test="bean.integral != null">
-				 integral,
-			</if>
-		 </trim>
-		 <trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="bean.fileId!=null">
-				 #{bean.fileId},
-			</if>
-			<if test="bean.articleId!=null">
-				 #{bean.articleId},
-			</if>
-			<if test="bean.userId!=null">
-				 #{bean.userId},
-			</if>
-			<if test="bean.fileSize!=null">
-				 #{bean.fileSize},
-			</if>
-			<if test="bean.fileName!=null">
-				 #{bean.fileName},
-			</if>
-			<if test="bean.downloadCount!=null">
-				 #{bean.downloadCount},
-			</if>
-			<if test="bean.filePath!=null">
-				 #{bean.filePath},
-			</if>
-			<if test="bean.fileType!=null">
-				 #{bean.fileType},
-			</if>
-			<if test="bean.integral!=null">
-				 #{bean.integral},
-			</if>
-		 </trim>
-		 on DUPLICATE key update 
-		 <trim prefix="" suffix="" suffixOverrides=",">
-			<if test="bean.fileId!=null">
-				 file_id = VALUES(file_id),
-			</if>
-			<if test="bean.articleId!=null">
-				 article_id = VALUES(article_id),
-			</if>
-			<if test="bean.userId!=null">
-				 user_id = VALUES(user_id),
-			</if>
-			<if test="bean.fileSize!=null">
-				 file_size = VALUES(file_size),
-			</if>
-			<if test="bean.fileName!=null">
-				 file_name = VALUES(file_name),
-			</if>
-			<if test="bean.downloadCount!=null">
-				 download_count = VALUES(download_count),
-			</if>
-			<if test="bean.filePath!=null">
-				 file_path = VALUES(file_path),
-			</if>
-			<if test="bean.fileType!=null">
-				 file_type = VALUES(file_type),
-			</if>
-			<if test="bean.integral!=null">
-				 integral = VALUES(integral),
-			</if>
-		 </trim>
-	</insert>
+    <!-- 插入或者更新 （匹配有值的字段）-->
+    <insert id="insertOrUpdate" parameterType="com.easybbs.entity.po.ForumArticleAttachment">
+        INSERT INTO forum_article_attachment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bean.fileId != null">
+                file_id,
+            </if>
+            <if test="bean.articleId != null">
+                article_id,
+            </if>
+            <if test="bean.userId != null">
+                user_id,
+            </if>
+            <if test="bean.fileSize != null">
+                file_size,
+            </if>
+            <if test="bean.fileName != null">
+                file_name,
+            </if>
+            <if test="bean.downloadCount != null">
+                download_count,
+            </if>
+            <if test="bean.filePath != null">
+                file_path,
+            </if>
+            <if test="bean.fileType != null">
+                file_type,
+            </if>
+            <if test="bean.integral != null">
+                integral,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bean.fileId!=null">
+                #{bean.fileId},
+            </if>
+            <if test="bean.articleId!=null">
+                #{bean.articleId},
+            </if>
+            <if test="bean.userId!=null">
+                #{bean.userId},
+            </if>
+            <if test="bean.fileSize!=null">
+                #{bean.fileSize},
+            </if>
+            <if test="bean.fileName!=null">
+                #{bean.fileName},
+            </if>
+            <if test="bean.downloadCount!=null">
+                #{bean.downloadCount},
+            </if>
+            <if test="bean.filePath!=null">
+                #{bean.filePath},
+            </if>
+            <if test="bean.fileType!=null">
+                #{bean.fileType},
+            </if>
+            <if test="bean.integral!=null">
+                #{bean.integral},
+            </if>
+        </trim>
+        on DUPLICATE key update
+        <trim prefix="" suffix="" suffixOverrides=",">
+            <if test="bean.fileId!=null">
+                file_id = VALUES(file_id),
+            </if>
+            <if test="bean.articleId!=null">
+                article_id = VALUES(article_id),
+            </if>
+            <if test="bean.userId!=null">
+                user_id = VALUES(user_id),
+            </if>
+            <if test="bean.fileSize!=null">
+                file_size = VALUES(file_size),
+            </if>
+            <if test="bean.fileName!=null">
+                file_name = VALUES(file_name),
+            </if>
+            <if test="bean.downloadCount!=null">
+                download_count = VALUES(download_count),
+            </if>
+            <if test="bean.filePath!=null">
+                file_path = VALUES(file_path),
+            </if>
+            <if test="bean.fileType!=null">
+                file_type = VALUES(file_type),
+            </if>
+            <if test="bean.integral!=null">
+                integral = VALUES(integral),
+            </if>
+        </trim>
+    </insert>
 
-	<!-- 添加 （批量插入）-->
-	<insert id="insertBatch" parameterType="com.easybbs.entity.po.ForumArticleAttachment">
-		 INSERT INTO forum_article_attachment(
-			 file_id,
-			 article_id,
-			 user_id,
-			 file_size,
-			 file_name,
-			 download_count,
-			 file_path,
-			 file_type,
-			 integral
-		 )values
-		 <foreach collection="list" item="item" separator=",">
-			 (
-				 #{item.fileId},
-				 #{item.articleId},
-				 #{item.userId},
-				 #{item.fileSize},
-				 #{item.fileName},
-				 #{item.downloadCount},
-				 #{item.filePath},
-				 #{item.fileType},
-				 #{item.integral}
-			 )
-		 </foreach>
-	</insert>
+    <!-- 添加 （批量插入）-->
+    <insert id="insertBatch" parameterType="com.easybbs.entity.po.ForumArticleAttachment">
+        INSERT INTO forum_article_attachment(
+        file_id,
+        article_id,
+        user_id,
+        file_size,
+        file_name,
+        download_count,
+        file_path,
+        file_type,
+        integral
+        )values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.fileId},
+            #{item.articleId},
+            #{item.userId},
+            #{item.fileSize},
+            #{item.fileName},
+            #{item.downloadCount},
+            #{item.filePath},
+            #{item.fileType},
+            #{item.integral}
+            )
+        </foreach>
+    </insert>
 
-	<!-- 批量新增修改 （批量插入）-->
-	<insert id="insertOrUpdateBatch" parameterType="com.easybbs.entity.po.ForumArticleAttachment">
-		 INSERT INTO forum_article_attachment(
-			 file_id,
-			 article_id,
-			 user_id,
-			 file_size,
-			 file_name,
-			 download_count,
-			 file_path,
-			 file_type,
-			 integral
-		 )values
-		 <foreach collection="list" item="item" separator=",">
-			 (
-				 #{item.fileId},
-				 #{item.articleId},
-				 #{item.userId},
-				 #{item.fileSize},
-				 #{item.fileName},
-				 #{item.downloadCount},
-				 #{item.filePath},
-				 #{item.fileType},
-				 #{item.integral}
-			 )
-		 </foreach>
-			on DUPLICATE key update 
-			file_id = VALUES(file_id),
-			article_id = VALUES(article_id),
-			user_id = VALUES(user_id),
-			file_size = VALUES(file_size),
-			file_name = VALUES(file_name),
-			download_count = VALUES(download_count),
-			file_path = VALUES(file_path),
-			file_type = VALUES(file_type),
-			integral = VALUES(integral)
-	</insert>
+    <!-- 批量新增修改 （批量插入）-->
+    <insert id="insertOrUpdateBatch" parameterType="com.easybbs.entity.po.ForumArticleAttachment">
+        INSERT INTO forum_article_attachment(
+        file_id,
+        article_id,
+        user_id,
+        file_size,
+        file_name,
+        download_count,
+        file_path,
+        file_type,
+        integral
+        )values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.fileId},
+            #{item.articleId},
+            #{item.userId},
+            #{item.fileSize},
+            #{item.fileName},
+            #{item.downloadCount},
+            #{item.filePath},
+            #{item.fileType},
+            #{item.integral}
+            )
+        </foreach>
+        on DUPLICATE key update
+        file_id = VALUES(file_id),
+        article_id = VALUES(article_id),
+        user_id = VALUES(user_id),
+        file_size = VALUES(file_size),
+        file_name = VALUES(file_name),
+        download_count = VALUES(download_count),
+        file_path = VALUES(file_path),
+        file_type = VALUES(file_type),
+        integral = VALUES(integral)
+    </insert>
 
-	<!--多条件修改-->
-	<update id="updateByParam" parameterType="com.easybbs.entity.query.ForumArticleAttachmentQuery">
-		 UPDATE forum_article_attachment
- 		 <set> 
-			<if test="bean.fileId != null">
-				 file_id = #{bean.fileId},
-			</if>
-			<if test="bean.articleId != null">
-				 article_id = #{bean.articleId},
-			</if>
-			<if test="bean.userId != null">
-				 user_id = #{bean.userId},
-			</if>
-			<if test="bean.fileSize != null">
-				 file_size = #{bean.fileSize},
-			</if>
-			<if test="bean.fileName != null">
-				 file_name = #{bean.fileName},
-			</if>
-			<if test="bean.downloadCount != null">
-				 download_count = #{bean.downloadCount},
-			</if>
-			<if test="bean.filePath != null">
-				 file_path = #{bean.filePath},
-			</if>
-			<if test="bean.fileType != null">
-				 file_type = #{bean.fileType},
-			</if>
-			<if test="bean.integral != null">
-				 integral = #{bean.integral},
-			</if>
- 		 </set>
- 		 <include refid="query_condition" />
-	</update>
+    <!--多条件修改-->
+    <update id="updateByParam" parameterType="com.easybbs.entity.query.ForumArticleAttachmentQuery">
+        UPDATE forum_article_attachment
+        <set>
+            <if test="bean.fileId != null">
+                file_id = #{bean.fileId},
+            </if>
+            <if test="bean.articleId != null">
+                article_id = #{bean.articleId},
+            </if>
+            <if test="bean.userId != null">
+                user_id = #{bean.userId},
+            </if>
+            <if test="bean.fileSize != null">
+                file_size = #{bean.fileSize},
+            </if>
+            <if test="bean.fileName != null">
+                file_name = #{bean.fileName},
+            </if>
+            <if test="bean.downloadCount != null">
+                download_count = #{bean.downloadCount},
+            </if>
+            <if test="bean.filePath != null">
+                file_path = #{bean.filePath},
+            </if>
+            <if test="bean.fileType != null">
+                file_type = #{bean.fileType},
+            </if>
+            <if test="bean.integral != null">
+                integral = #{bean.integral},
+            </if>
+        </set>
+        <include refid="query_condition"/>
+    </update>
 
-	<!--多条件删除-->
-	<delete id="deleteByParam">
-		 delete from forum_article_attachment
- 		 <include refid="query_condition" />
-	</delete>
+    <!--多条件删除-->
+    <delete id="deleteByParam">
+        delete from forum_article_attachment
+        <include refid="query_condition"/>
+    </delete>
 
-	<!-- 根据FileId修改-->
-	<update id="updateByFileId" parameterType="com.easybbs.entity.po.ForumArticleAttachment">
-		 UPDATE forum_article_attachment
- 		 <set> 
-			<if test="bean.articleId != null">
-				 article_id = #{bean.articleId},
-			</if>
-			<if test="bean.userId != null">
-				 user_id = #{bean.userId},
-			</if>
-			<if test="bean.fileSize != null">
-				 file_size = #{bean.fileSize},
-			</if>
-			<if test="bean.fileName != null">
-				 file_name = #{bean.fileName},
-			</if>
-			<if test="bean.downloadCount != null">
-				 download_count = #{bean.downloadCount},
-			</if>
-			<if test="bean.filePath != null">
-				 file_path = #{bean.filePath},
-			</if>
-			<if test="bean.fileType != null">
-				 file_type = #{bean.fileType},
-			</if>
-			<if test="bean.integral != null">
-				 integral = #{bean.integral},
-			</if>
- 		 </set>
- 		 where file_id=#{fileId}
-	</update>
+    <!-- 根据FileId修改-->
+    <update id="updateByFileId" parameterType="com.easybbs.entity.po.ForumArticleAttachment">
+        UPDATE forum_article_attachment
+        <set>
+            <if test="bean.articleId != null">
+                article_id = #{bean.articleId},
+            </if>
+            <if test="bean.userId != null">
+                user_id = #{bean.userId},
+            </if>
+            <if test="bean.fileSize != null">
+                file_size = #{bean.fileSize},
+            </if>
+            <if test="bean.fileName != null">
+                file_name = #{bean.fileName},
+            </if>
+            <if test="bean.downloadCount != null">
+                download_count = #{bean.downloadCount},
+            </if>
+            <if test="bean.filePath != null">
+                file_path = #{bean.filePath},
+            </if>
+            <if test="bean.fileType != null">
+                file_type = #{bean.fileType},
+            </if>
+            <if test="bean.integral != null">
+                integral = #{bean.integral},
+            </if>
+        </set>
+        where file_id=#{fileId}
+    </update>
+    <update id="updateDownLoadCount">
+        update forum_article_attachment
+        set download_count = download_count + 1
+        where file_id = #{fileId}
+    </update>
 
-	<!-- 根据FileId删除-->
-	<delete id="deleteByFileId">
-		delete from forum_article_attachment where file_id=#{fileId}
-	</delete>
+    <!-- 根据FileId删除-->
+    <delete id="deleteByFileId">
+        delete
+        from forum_article_attachment
+        where file_id = #{fileId}
+    </delete>
 
-	<!-- 根据PrimaryKey获取对象-->
-	<select id="selectByFileId" resultMap="base_result_map" >
-		select <include refid="base_column_list" /> from forum_article_attachment where file_id=#{fileId}
-	</select>
+    <!-- 根据PrimaryKey获取对象-->
+    <select id="selectByFileId" resultMap="base_result_map">
+        select
+        <include refid="base_column_list"/>
+        from forum_article_attachment where file_id=#{fileId}
+    </select>
 
 </mapper>

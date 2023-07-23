@@ -150,7 +150,7 @@
 				 article_id = VALUES(article_id),
 			</if>
 			<if test="bean.downloadCount!=null">
-				 download_count = VALUES(download_count),
+				 download_count = download_count + 1,
 			</if>
 		 </trim>
 	</insert>

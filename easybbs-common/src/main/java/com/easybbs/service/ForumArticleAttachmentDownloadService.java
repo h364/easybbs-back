@@ -2,9 +2,13 @@ package com.easybbs.service;
 
 import java.util.List;
 
+import com.easybbs.dto.SessionWebUserDto;
 import com.easybbs.entity.query.ForumArticleAttachmentDownloadQuery;
 import com.easybbs.entity.po.ForumArticleAttachmentDownload;
 import com.easybbs.entity.vo.PaginationResultVO;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -69,4 +73,5 @@ public interface ForumArticleAttachmentDownloadService {
 	 */
 	Integer deleteForumArticleAttachmentDownloadByFileIdAndUserId(String fileId,String userId);
 
+    void attachmentDownLoad(HttpServletRequest request, HttpServletResponse response, String fileId, SessionWebUserDto userDto);
 }

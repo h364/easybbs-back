@@ -25,4 +25,5 @@ public interface ForumArticleAttachmentMapper<T,P> extends BaseMapper<T,P> {
 	 T selectByFileId(@Param("fileId") String fileId);
 
 
+    void updateDownLoadCount(@Param("fileId") String fileId);
 }
