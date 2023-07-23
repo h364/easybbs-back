@@ -55,8 +55,7 @@
 	<!-- 通用查询结果列-->
 	<sql id="base_column_list">
 		 article_id,board_id,board_name,p_board_id,p_board_name,
-		 user_id,nick_name,user_ip_address,title,cover,
-		 content,markdown_content,editor_type,summary,post_time,
+		 user_id,nick_name,user_ip_address,title,cover,editor_type,summary,post_time,
 		 last_update_time,read_count,good_count,comment_count,top_type,
 		 attachment_type,status
 	</sql>
@@ -185,6 +184,9 @@
 			<if test="query.lastUpdateTimeEnd!= null and query.lastUpdateTimeEnd!=''">
 				 <![CDATA[ and  last_update_time< date_sub(str_to_date(#{query.lastUpdateTimeEnd},'%Y-%m-%d'),interval -1 day) ]]>
 			</if>
+			 <if test="query.currentUserId != null">
+				 and (status = 1 or (status = 0 and user_id = #{query.currentUserId}))
+			 </if>
 	 </where>
 	</sql>
 
@@ -844,7 +846,25 @@
 
 	<!-- 根据PrimaryKey获取对象-->
 	<select id="selectByArticleId" resultMap="base_result_map" >
-		select <include refid="base_column_list" /> from forum_article where article_id=#{articleId}
+		select
+		<include refid="base_column_list" />,content,markdown_content
+		from forum_article where article_id=#{articleId}
 	</select>
+
+	<update id="updateArticleCount">
+		update forum_article
+		<set>
+			<if test="updateType == 0">
+				read_count = read_count + #{changeCount}
+			</if>
+			<if test="updateType == 1">
+				good_count = good_count + #{changeCount}
+			</if>
+			<if test="updateType == 2">
+				comment_count = comment_count + #{changeCount}
+			</if>
+		</set>
+		where article_id = #{articleId}
+	</update>
 
 </mapper>

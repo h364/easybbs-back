@@ -1,5 +1,6 @@
 package com.easybbs.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -126,5 +127,25 @@ public class ForumBoardServiceImpl implements ForumBoardService {
 	@Override
 	public Integer deleteForumBoardByBoardId(Integer boardId) {
 		return this.forumBoardMapper.deleteByBoardId(boardId);
+	}
+
+	@Override
+	public List<ForumBoard> getBoardTree(Integer postType) {
+		ForumBoardQuery boardQuery = new ForumBoardQuery();
+		boardQuery.setOrderBy("sort asc");
+		boardQuery.setPostType(postType);
+		List<ForumBoard> boardList = forumBoardMapper.selectList(boardQuery);
+		return convertLine2Tree(boardList, 0);
+	}
+
+	private List<ForumBoard> convertLine2Tree(List<ForumBoard> dataList, Integer pid) {
+		List<ForumBoard> children = new ArrayList();
+		for (ForumBoard m : dataList) {
+			if (m.getpBoardId().equals(pid)) {
+				m.setChildren(convertLine2Tree(dataList, m.getBoardId()));
+				children.add(m);
+			}
+		}
+		return children;
 	}
 }

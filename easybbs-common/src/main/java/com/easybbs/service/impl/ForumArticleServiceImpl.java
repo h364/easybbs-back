@@ -4,6 +4,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.easybbs.constants.Constants;
+import com.easybbs.entity.enums.ArticleStatusEnum;
+import com.easybbs.entity.enums.ResponseCodeEnum;
+import com.easybbs.entity.enums.UpdateArticleCountTypeEnum;
+import com.easybbs.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
 import com.easybbs.entity.enums.PageSize;
@@ -126,5 +131,17 @@ public class ForumArticleServiceImpl implements ForumArticleService {
 	@Override
 	public Integer deleteForumArticleByArticleId(String articleId) {
 		return this.forumArticleMapper.deleteByArticleId(articleId);
+	}
+
+	@Override
+	public ForumArticle readArticle(String articleId) {
+		ForumArticle forumArticle = this.forumArticleMapper.selectByArticleId(articleId);
+		if (forumArticle == null) {
+			throw new BusinessException(ResponseCodeEnum.CODE_404);
+		}
+		if (ArticleStatusEnum.AUDIT.getStatus().equals(forumArticle.getStatus())) {
+			forumArticleMapper.updateArticleCount(UpdateArticleCountTypeEnum.READ_COUNT.getType(), Constants.ONE, articleId);
+		}
+		return forumArticle;
 	}
 }

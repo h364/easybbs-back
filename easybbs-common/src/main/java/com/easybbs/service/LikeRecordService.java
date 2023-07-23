@@ -2,6 +2,7 @@ package com.easybbs.service;
 
 import java.util.List;
 
+import com.easybbs.entity.enums.OperRecordOpTypeEnum;
 import com.easybbs.entity.query.LikeRecordQuery;
 import com.easybbs.entity.po.LikeRecord;
 import com.easybbs.entity.vo.PaginationResultVO;
@@ -87,4 +88,7 @@ public interface LikeRecordService {
 	 */
 	Integer deleteLikeRecordByObjectIdAndUserIdAndOpType(String objectId,String userId,Integer opType);
 
+    LikeRecord getUserOperRecordByObjectIdAndUserIdAndOpType(String articleId, String userId, Integer type);
+
+    void doLike(String articleId, String userId, String nickname, OperRecordOpTypeEnum opTypeEnum);
 }

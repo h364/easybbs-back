@@ -2,6 +2,7 @@ package com.easybbs.aspect;
 
 import com.easybbs.anotation.GlobalInterceptor;
 import com.easybbs.anotation.VerifyParam;
+import com.easybbs.constants.Constants;
 import com.easybbs.entity.enums.ResponseCodeEnum;
 import com.easybbs.exception.BusinessException;
 import com.easybbs.utils.StringTools;
@@ -13,7 +14,11 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -41,11 +46,24 @@ public class GlobalOperationAspect {
                 return;
             }
 
+            if(interceptor.checkLogin()) {
+                validateLogin();
+            }
+
             if(interceptor.checkParams()) {
                 validateParams(method, arguments);
             }
         }catch (Exception e){
             throw new BusinessException("全局拦截器异常");
+        }
+    }
+
+    private void validateLogin() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpSession session = request.getSession();
+        Object webDto = session.getAttribute(Constants.SESSION_KEY);
+        if( webDto == null) {
+            throw new BusinessException(ResponseCodeEnum.CODE_901);
         }
     }
 

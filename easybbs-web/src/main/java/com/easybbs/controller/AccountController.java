@@ -101,7 +101,7 @@ public class AccountController extends ABaseController {
             String ip = getIpAddr(request);
             SessionWebUserDto webDto = userInfoService.login(email, password, ip);
             session.setAttribute(Constants.SESSION_KEY, webDto);
-            return getSuccessResponseVO(null);
+            return getSuccessResponseVO(webDto);
         } finally {
             session.removeAttribute(Constants.CHECK_CODE_KEY);
         }
@@ -133,8 +133,19 @@ public class AccountController extends ABaseController {
 
     @RequestMapping("/resetPwd")
     @GlobalInterceptor(checkParams = true)
-    public ResponseVO resetPwd(HttpSession session, String email) {
-        session.invalidate();
-        return getSuccessResponseVO(null);
+    public ResponseVO resetPwd(HttpSession session,
+                               @VerifyParam(required = true, regex = VerifyRegexEnum.EMAIL) String email,
+                               @VerifyParam(required = true) String emailCode,
+                               @VerifyParam(required = true, regex = VerifyRegexEnum.PASSWORD) String password,
+                               @VerifyParam(required = true) String checkCode) {
+        try {
+            if (!checkCode.equalsIgnoreCase((String) session.getAttribute(Constants.CHECK_CODE_KEY))) {
+                throw new BusinessException("验证码错误");
+            }
+            userInfoService.resetPwd(email, password, emailCode);
+            return getSuccessResponseVO(null);
+        } finally {
+            session.removeAttribute(Constants.CHECK_CODE_KEY);
+        }
     }
 }

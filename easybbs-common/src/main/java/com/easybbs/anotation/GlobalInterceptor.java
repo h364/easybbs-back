@@ -12,5 +12,5 @@ public @interface GlobalInterceptor {
 
     boolean checkParams() default false;
 
-    boolean checkLogin() default true;
+    boolean checkLogin() default false;
 }

@@ -2,6 +2,7 @@ package com.easybbs.entity.po;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.List;
 
 
 /**
@@ -44,6 +45,16 @@ public class ForumBoard implements Serializable {
 	 * 0:只允许管理员发帖 1:任何人可以发帖
 	 */
 	private Integer postType;
+
+	public List<ForumBoard> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<ForumBoard> children) {
+		this.children = children;
+	}
+
+	private List<ForumBoard> children;
 
 
 	public void setBoardId(Integer boardId){

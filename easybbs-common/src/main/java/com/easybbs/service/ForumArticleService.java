@@ -69,4 +69,5 @@ public interface ForumArticleService {
 	 */
 	Integer deleteForumArticleByArticleId(String articleId);
 
+    ForumArticle readArticle(String articleId);
 }
