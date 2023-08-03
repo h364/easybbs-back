@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 /**
@@ -88,6 +89,25 @@ public class ForumComment implements Serializable {
 	 */
 	private Integer status;
 
+	private Integer likeType;
+
+	private List<ForumComment> children;
+
+	public List<ForumComment> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<ForumComment> children) {
+		this.children = children;
+	}
+
+	public Integer getLikeType() {
+		return likeType;
+	}
+
+	public void setLikeType(Integer likeType) {
+		this.likeType = likeType;
+	}
 
 	public void setCommentId(Integer commentId){
 		this.commentId = commentId;

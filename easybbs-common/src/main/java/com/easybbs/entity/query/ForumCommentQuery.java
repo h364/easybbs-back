@@ -1,6 +1,7 @@
 package com.easybbs.entity.query;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -99,6 +100,51 @@ public class ForumCommentQuery extends BaseParam {
 	 */
 	private Integer status;
 
+	/**
+	 * 是否加载评论下级
+	 */
+	private Boolean loadChildren;
+
+	private Boolean queryLikeType;
+
+	public List<Integer> getPcommentIdList() {
+		return pcommentIdList;
+	}
+
+	public void setPcommentIdList(List<Integer> pcommentIdList) {
+		this.pcommentIdList = pcommentIdList;
+	}
+
+	private List<Integer> pcommentIdList;
+
+	public Boolean getQueryLikeType() {
+		return queryLikeType;
+	}
+
+	public void setQueryLikeType(Boolean queryLikeType) {
+		this.queryLikeType = queryLikeType;
+	}
+
+	public String getCurrentUserId() {
+		return currentUserId;
+	}
+
+	public void setCurrentUserId(String currentUserId) {
+		this.currentUserId = currentUserId;
+	}
+
+	/**
+	 * 记录当前用户id
+	 */
+	private String currentUserId;
+
+	public Boolean getLoadChildren() {
+		return loadChildren;
+	}
+
+	public void setLoadChildren(Boolean loadChildren) {
+		this.loadChildren = loadChildren;
+	}
 
 	public void setCommentId(Integer commentId){
 		this.commentId = commentId;

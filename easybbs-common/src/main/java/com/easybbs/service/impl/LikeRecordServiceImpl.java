@@ -9,18 +9,17 @@ import javax.annotation.Resource;
 import com.easybbs.constants.Constants;
 import com.easybbs.entity.enums.*;
 import com.easybbs.entity.po.ForumArticle;
+import com.easybbs.entity.po.ForumComment;
 import com.easybbs.entity.po.UserMessage;
-import com.easybbs.entity.query.ForumArticleQuery;
-import com.easybbs.entity.query.UserMessageQuery;
+import com.easybbs.entity.query.*;
 import com.easybbs.exception.BusinessException;
 import com.easybbs.mappers.ForumArticleMapper;
+import com.easybbs.mappers.ForumCommentMapper;
 import com.easybbs.mappers.UserMessageMapper;
 import org.springframework.stereotype.Service;
 
-import com.easybbs.entity.query.LikeRecordQuery;
 import com.easybbs.entity.po.LikeRecord;
 import com.easybbs.entity.vo.PaginationResultVO;
-import com.easybbs.entity.query.SimplePage;
 import com.easybbs.mappers.LikeRecordMapper;
 import com.easybbs.service.LikeRecordService;
 import com.easybbs.utils.StringTools;
@@ -41,6 +40,9 @@ public class LikeRecordServiceImpl implements LikeRecordService {
 
     @Resource
     private ForumArticleMapper<ForumArticle, ForumArticleQuery> forumArticleMapper;
+
+    @Resource
+    private ForumCommentMapper<ForumComment, ForumCommentQuery> forumCommentMapper;
 
     /**
      * 根据条件查询列表
@@ -171,29 +173,43 @@ public class LikeRecordServiceImpl implements LikeRecordService {
 
     @Override
     public LikeRecord getUserOperRecordByObjectIdAndUserIdAndOpType(String articleId, String userId, Integer type) {
-        return null;
+        return this.likeRecordMapper.selectByObjectIdAndUserIdAndOpType(articleId, userId, type);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void doLike(String articleId, String userId, String nickname, OperRecordOpTypeEnum opTypeEnum) {
+    public void doLike(String objectId, String userId, String nickname, OperRecordOpTypeEnum opTypeEnum) {
         UserMessage userMessage = new UserMessage();
         userMessage.setCreateTime(new Date());
         switch (opTypeEnum) {
             case ARTICLE_LIKE:
-                ForumArticle forumArticle = forumArticleMapper.selectByArticleId(articleId);
+                ForumArticle forumArticle = forumArticleMapper.selectByArticleId(objectId);
                 if (forumArticle == null) {
                     throw new BusinessException("文章不存在");
                 }
-                articleLike(articleId, forumArticle, userId, opTypeEnum);
-                userMessage.setArticleId(articleId);
+                articleLike(objectId, forumArticle, userId, opTypeEnum);
+
+                userMessage.setArticleId(objectId);
                 userMessage.setArticleTitle(forumArticle.getTitle());
                 userMessage.setMessageType(MessageTypeEnum.ARTICLE_LIKE.getType());
                 userMessage.setCommentId(Constants.ZERO);
                 userMessage.setReceivedUserId(forumArticle.getUserId());
                 break;
             case COMMENT_LIKE:
+                ForumComment forumComment = forumCommentMapper.selectByCommentId(Integer.parseInt(objectId));
+                if (forumComment == null) {
+                    throw new BusinessException("评论不存在");
+                }
+                commentLike(objectId, forumComment, userId, opTypeEnum);
 
+                forumArticle = forumArticleMapper.selectByArticleId(forumComment.getArticleId());
+
+                userMessage.setArticleId(objectId);
+                userMessage.setArticleTitle(forumArticle.getTitle());
+                userMessage.setMessageType(MessageTypeEnum.ARTICLE_LIKE.getType());
+                userMessage.setCommentId(forumComment.getCommentId());
+                userMessage.setReceivedUserId(forumComment.getReplyUserId());
+                userMessage.setMessageContent(forumComment.getContent());
                 break;
 
         }
@@ -201,8 +217,8 @@ public class LikeRecordServiceImpl implements LikeRecordService {
         userMessage.setSendNickName(nickname);
         userMessage.setStatus(MessageStatusEnum.NO_READ.getStatus());
         if (!userId.equals(userMessage.getReceivedUserId())) {
-            UserMessage message = userMessageMapper.selectByArticleIdAndCommentIdAndSendUserIdAndMessageType(articleId, userMessage.getCommentId(), userMessage.getSendUserId(), userMessage.getMessageType());
-            if(message == null) {
+            UserMessage message = userMessageMapper.selectByArticleIdAndCommentIdAndSendUserIdAndMessageType(objectId, userMessage.getCommentId(), userMessage.getSendUserId(), userMessage.getMessageType());
+            if (message == null) {
                 userMessageMapper.insert(userMessage);
             }
 
@@ -225,5 +241,22 @@ public class LikeRecordServiceImpl implements LikeRecordService {
             forumArticleMapper.updateArticleCount(UpdateArticleCountTypeEnum.GOOD_COUNT.getType(), Constants.ONE, articleId);
         }
         return likeRecord;
+    }
+
+    private void commentLike(String commentId, ForumComment forumComment, String userId, OperRecordOpTypeEnum opTypeEnum) {
+        LikeRecord likeRecord = likeRecordMapper.selectByObjectIdAndUserIdAndOpType(commentId, userId, opTypeEnum.getType());
+        if (likeRecord != null) {
+            likeRecordMapper.deleteByObjectIdAndUserIdAndOpType(commentId, userId, opTypeEnum.getType());
+            forumCommentMapper.updateArticleCount(-1, Integer.parseInt(commentId));
+        } else {
+            LikeRecord record = new LikeRecord();
+            record.setObjectId(commentId);
+            record.setUserId(userId);
+            record.setOpType(opTypeEnum.getType());
+            record.setCreateTime(new Date());
+            record.setAuthorUserId(forumComment.getUserId());
+            likeRecordMapper.insert(record);
+            forumCommentMapper.updateArticleCount(1, Integer.parseInt(commentId));
+        }
     }
 }

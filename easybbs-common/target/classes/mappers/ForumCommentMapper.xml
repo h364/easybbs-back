@@ -1,571 +1,603 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.easybbs.mappers.ForumCommentMapper">
 
-	<!--实体映射-->
-	<resultMap id="base_result_map" type="com.easybbs.entity.po.ForumComment">
-		<!--评论ID-->
-		<id column="comment_id" property="commentId"  />
-		<!--父级评论ID-->
-		<result column="p_comment_id" property="pCommentId"  />
-		<!--文章ID-->
-		<result column="article_id" property="articleId"  />
-		<!--回复内容-->
-		<result column="content" property="content"  />
-		<!--图片-->
-		<result column="img_path" property="imgPath"  />
-		<!--用户ID-->
-		<result column="user_id" property="userId"  />
-		<!--昵称-->
-		<result column="nick_name" property="nickName"  />
-		<!--用户ip地址-->
-		<result column="user_ip_address" property="userIpAddress"  />
-		<!--回复人ID-->
-		<result column="reply_user_id" property="replyUserId"  />
-		<!--回复人昵称-->
-		<result column="reply_nick_name" property="replyNickName"  />
-		<!--0:未置顶  1:置顶-->
-		<result column="top_type" property="topType"  />
-		<!--发布时间-->
-		<result column="post_time" property="postTime"  />
-		<!--good数量-->
-		<result column="good_count" property="goodCount"  />
-		<!--0:待审核  1:已审核-->
-		<result column="status" property="status"  />
-	</resultMap>
+    <!--实体映射-->
+    <resultMap id="base_result_map" type="com.easybbs.entity.po.ForumComment">
+        <!--评论ID-->
+        <id column="comment_id" property="commentId"/>
+        <!--父级评论ID-->
+        <result column="p_comment_id" property="pCommentId"/>
+        <!--文章ID-->
+        <result column="article_id" property="articleId"/>
+        <!--回复内容-->
+        <result column="content" property="content"/>
+        <!--图片-->
+        <result column="img_path" property="imgPath"/>
+        <!--用户ID-->
+        <result column="user_id" property="userId"/>
+        <!--昵称-->
+        <result column="nick_name" property="nickName"/>
+        <!--用户ip地址-->
+        <result column="user_ip_address" property="userIpAddress"/>
+        <!--回复人ID-->
+        <result column="reply_user_id" property="replyUserId"/>
+        <!--回复人昵称-->
+        <result column="reply_nick_name" property="replyNickName"/>
+        <!--0:未置顶  1:置顶-->
+        <result column="top_type" property="topType"/>
+        <!--发布时间-->
+        <result column="post_time" property="postTime"/>
+        <!--good数量-->
+        <result column="good_count" property="goodCount"/>
+        <!--0:待审核  1:已审核-->
+        <result column="status" property="status"/>
+    </resultMap>
 
 
-	<!-- 通用查询结果列-->
-	<sql id="base_column_list">
-		 comment_id,p_comment_id,article_id,content,img_path,
+    <!-- 通用查询结果列-->
+    <sql id="base_column_list">
+        comment_id
+        ,p_comment_id,article_id,content,img_path,
 		 user_id,nick_name,user_ip_address,reply_user_id,reply_nick_name,
 		 top_type,post_time,good_count,status
-	</sql>
+    </sql>
 
-	<sql id="base_condition_filed">
-			<if test="query.commentId != null">
-				 and  comment_id = #{query.commentId}
-			</if>
-			<if test="query.pCommentId != null">
-				 and  p_comment_id = #{query.pCommentId}
-			</if>
-			<if test="query.articleId != null and query.articleId!=''">
-				 and  article_id = #{query.articleId}
-			</if>
-			<if test="query.content != null and query.content!=''">
-				 and  content = #{query.content}
-			</if>
-			<if test="query.imgPath != null and query.imgPath!=''">
-				 and  img_path = #{query.imgPath}
-			</if>
-			<if test="query.userId != null and query.userId!=''">
-				 and  user_id = #{query.userId}
-			</if>
-			<if test="query.nickName != null and query.nickName!=''">
-				 and  nick_name = #{query.nickName}
-			</if>
-			<if test="query.userIpAddress != null and query.userIpAddress!=''">
-				 and  user_ip_address = #{query.userIpAddress}
-			</if>
-			<if test="query.replyUserId != null and query.replyUserId!=''">
-				 and  reply_user_id = #{query.replyUserId}
-			</if>
-			<if test="query.replyNickName != null and query.replyNickName!=''">
-				 and  reply_nick_name = #{query.replyNickName}
-			</if>
-			<if test="query.topType != null">
-				 and  top_type = #{query.topType}
-			</if>
-			<if test="query.postTime != null and query.postTime!=''">
-				 <![CDATA[ and  post_time=str_to_date(#{query.postTime}, '%Y-%m-%d') ]]>
-			</if>
-			<if test="query.goodCount != null">
-				 and  good_count = #{query.goodCount}
-			</if>
-			<if test="query.status != null">
-				 and  status = #{query.status}
-			</if>
-	</sql>
-	<!-- 通用条件列-->
-	<sql id="base_condition">
-	 <where>
-		 <include refid="base_condition_filed" />
-	 </where>
-	</sql>
+    <sql id="base_condition_filed">
+        <if test="query.commentId != null">
+            and comment_id = #{query.commentId}
+        </if>
+        <if test="query.pCommentId != null">
+            and p_comment_id = #{query.pCommentId}
+        </if>
+        <if test="query.articleId != null and query.articleId!=''">
+            and article_id = #{query.articleId}
+        </if>
+        <if test="query.content != null and query.content!=''">
+            and content = #{query.content}
+        </if>
+        <if test="query.imgPath != null and query.imgPath!=''">
+            and img_path = #{query.imgPath}
+        </if>
+        <if test="query.userId != null and query.userId!=''">
+            and user_id = #{query.userId}
+        </if>
+        <if test="query.nickName != null and query.nickName!=''">
+            and nick_name = #{query.nickName}
+        </if>
+        <if test="query.userIpAddress != null and query.userIpAddress!=''">
+            and user_ip_address = #{query.userIpAddress}
+        </if>
+        <if test="query.replyUserId != null and query.replyUserId!=''">
+            and reply_user_id = #{query.replyUserId}
+        </if>
+        <if test="query.replyNickName != null and query.replyNickName!=''">
+            and reply_nick_name = #{query.replyNickName}
+        </if>
+        <if test="query.topType != null">
+            and top_type = #{query.topType}
+        </if>
+        <if test="query.postTime != null and query.postTime!=''">
+            <![CDATA[ and  post_time=str_to_date(#{query.postTime}, '%Y-%m-%d') ]]>
+        </if>
+        <if test="query.goodCount != null">
+            and good_count = #{query.goodCount}
+        </if>
+        <if test="query.status != null">
+            and status = #{query.status}
+        </if>
+    </sql>
+    <!-- 通用条件列-->
+    <sql id="base_condition">
+        <where>
+            <include refid="base_condition_filed"/>
+        </where>
+    </sql>
 
-	<!-- 通用查询条件列-->
-	<sql id="query_condition">
-	 <where>
-			<include refid="base_condition_filed" />
-			<if test="query.articleIdFuzzy!= null  and query.articleIdFuzzy!=''">
-				 and  article_id like concat('%', #{query.articleIdFuzzy}, '%')
-			</if>
-			<if test="query.contentFuzzy!= null  and query.contentFuzzy!=''">
-				 and  content like concat('%', #{query.contentFuzzy}, '%')
-			</if>
-			<if test="query.imgPathFuzzy!= null  and query.imgPathFuzzy!=''">
-				 and  img_path like concat('%', #{query.imgPathFuzzy}, '%')
-			</if>
-			<if test="query.userIdFuzzy!= null  and query.userIdFuzzy!=''">
-				 and  user_id like concat('%', #{query.userIdFuzzy}, '%')
-			</if>
-			<if test="query.nickNameFuzzy!= null  and query.nickNameFuzzy!=''">
-				 and  nick_name like concat('%', #{query.nickNameFuzzy}, '%')
-			</if>
-			<if test="query.userIpAddressFuzzy!= null  and query.userIpAddressFuzzy!=''">
-				 and  user_ip_address like concat('%', #{query.userIpAddressFuzzy}, '%')
-			</if>
-			<if test="query.replyUserIdFuzzy!= null  and query.replyUserIdFuzzy!=''">
-				 and  reply_user_id like concat('%', #{query.replyUserIdFuzzy}, '%')
-			</if>
-			<if test="query.replyNickNameFuzzy!= null  and query.replyNickNameFuzzy!=''">
-				 and  reply_nick_name like concat('%', #{query.replyNickNameFuzzy}, '%')
-			</if>
-			<if test="query.postTimeStart!= null and query.postTimeStart!=''">
-				 <![CDATA[ and  post_time>=str_to_date(#{query.postTimeStart}, '%Y-%m-%d') ]]>
-			</if>
-			<if test="query.postTimeEnd!= null and query.postTimeEnd!=''">
-				 <![CDATA[ and  post_time< date_sub(str_to_date(#{query.postTimeEnd},'%Y-%m-%d'),interval -1 day) ]]>
-			</if>
-	 </where>
-	</sql>
+    <!-- 通用查询条件列-->
+    <sql id="query_condition">
+        <where>
+            <include refid="base_condition_filed"/>
+            <if test="query.articleIdFuzzy!= null  and query.articleIdFuzzy!=''">
+                and article_id like concat('%', #{query.articleIdFuzzy}, '%')
+            </if>
+            <if test="query.contentFuzzy!= null  and query.contentFuzzy!=''">
+                and content like concat('%', #{query.contentFuzzy}, '%')
+            </if>
+            <if test="query.imgPathFuzzy!= null  and query.imgPathFuzzy!=''">
+                and img_path like concat('%', #{query.imgPathFuzzy}, '%')
+            </if>
+            <if test="query.userIdFuzzy!= null  and query.userIdFuzzy!=''">
+                and user_id like concat('%', #{query.userIdFuzzy}, '%')
+            </if>
+            <if test="query.nickNameFuzzy!= null  and query.nickNameFuzzy!=''">
+                and nick_name like concat('%', #{query.nickNameFuzzy}, '%')
+            </if>
+            <if test="query.userIpAddressFuzzy!= null  and query.userIpAddressFuzzy!=''">
+                and user_ip_address like concat('%', #{query.userIpAddressFuzzy}, '%')
+            </if>
+            <if test="query.replyUserIdFuzzy!= null  and query.replyUserIdFuzzy!=''">
+                and reply_user_id like concat('%', #{query.replyUserIdFuzzy}, '%')
+            </if>
+            <if test="query.replyNickNameFuzzy!= null  and query.replyNickNameFuzzy!=''">
+                and reply_nick_name like concat('%', #{query.replyNickNameFuzzy}, '%')
+            </if>
+            <if test="query.postTimeStart!= null and query.postTimeStart!=''">
+                <![CDATA[ and  post_time>=str_to_date(#{query.postTimeStart}, '%Y-%m-%d') ]]>
+            </if>
+            <if test="query.postTimeEnd!= null and query.postTimeEnd!=''">
+                <![CDATA[ and  post_time< date_sub(str_to_date(#{query.postTimeEnd},'%Y-%m-%d'),interval -1 day) ]]>
+            </if>
+            <if test="query.pcommentIdList != null and query.pcommentIdList.size() > 0">
+                and p_comment_id in (<foreach collection="query.pcommentIdList" separator="," item="item">
+                #{item}</foreach>)
+            </if>
+            <if test="query.currentUserId != null">
+                and (status = 1 or (status = 0 and user_id = #{query.currentUserId}))
+            </if>
+        </where>
+    </sql>
 
-	<!-- 查询集合-->
-	<select id="selectList" resultMap="base_result_map" >
-		 SELECT <include refid="base_column_list" /> FROM forum_comment <include refid="query_condition" />
-		 <if test="query.orderBy!=null">
-			 order by ${query.orderBy}
-		 </if>
-		 <if test="query.simplePage!=null">
-			 limit #{query.simplePage.start},#{query.simplePage.end}
-		 </if>
-	</select>
+    <!-- 查询集合-->
+    <select id="selectList" resultMap="base_result_map">
+        SELECT
+        <include refid="base_column_list"/>
+        <if test="query.queryLikeType != null and query.queryLikeType and query.currentUserId != null">
+            ,(select count(1) from like_record r where r.object_id = c.comment_id and r.user_id =
+            #{query.currentUserId}) likeType
+        </if>
+        FROM forum_comment c
+        <include refid="query_condition"/>
+        <if test="query.orderBy!=null">
+            order by ${query.orderBy}
+        </if>
+        <if test="query.simplePage!=null">
+            limit #{query.simplePage.start},#{query.simplePage.end}
+        </if>
+    </select>
 
-	<!-- 查询数量-->
-	<select id="selectCount" resultType="java.lang.Integer" >
-		 SELECT count(1) FROM forum_comment <include refid="query_condition" />
-	</select>
+    <!-- 查询数量-->
+    <select id="selectCount" resultType="java.lang.Integer">
+        SELECT count(1) FROM forum_comment
+        <include refid="query_condition"/>
+    </select>
 
-	<!-- 插入 （匹配有值的字段）-->
-	<insert id="insert" parameterType="com.easybbs.entity.po.ForumComment">
-		<selectKey keyProperty="bean.commentId" resultType="Integer" order="AFTER">
-			SELECT LAST_INSERT_ID()
-		</selectKey>
-		 INSERT INTO forum_comment
-		 <trim prefix="(" suffix=")" suffixOverrides="," >
-			<if test="bean.pCommentId != null">
-				 p_comment_id,
-			</if>
-			<if test="bean.articleId != null">
-				 article_id,
-			</if>
-			<if test="bean.content != null">
-				 content,
-			</if>
-			<if test="bean.imgPath != null">
-				 img_path,
-			</if>
-			<if test="bean.userId != null">
-				 user_id,
-			</if>
-			<if test="bean.nickName != null">
-				 nick_name,
-			</if>
-			<if test="bean.userIpAddress != null">
-				 user_ip_address,
-			</if>
-			<if test="bean.replyUserId != null">
-				 reply_user_id,
-			</if>
-			<if test="bean.replyNickName != null">
-				 reply_nick_name,
-			</if>
-			<if test="bean.topType != null">
-				 top_type,
-			</if>
-			<if test="bean.postTime != null">
-				 post_time,
-			</if>
-			<if test="bean.goodCount != null">
-				 good_count,
-			</if>
-			<if test="bean.status != null">
-				 status,
-			</if>
-		 </trim>
-		 <trim prefix="values (" suffix=")" suffixOverrides="," >
-			<if test="bean.pCommentId!=null">
-				 #{bean.pCommentId},
-			</if>
-			<if test="bean.articleId!=null">
-				 #{bean.articleId},
-			</if>
-			<if test="bean.content!=null">
-				 #{bean.content},
-			</if>
-			<if test="bean.imgPath!=null">
-				 #{bean.imgPath},
-			</if>
-			<if test="bean.userId!=null">
-				 #{bean.userId},
-			</if>
-			<if test="bean.nickName!=null">
-				 #{bean.nickName},
-			</if>
-			<if test="bean.userIpAddress!=null">
-				 #{bean.userIpAddress},
-			</if>
-			<if test="bean.replyUserId!=null">
-				 #{bean.replyUserId},
-			</if>
-			<if test="bean.replyNickName!=null">
-				 #{bean.replyNickName},
-			</if>
-			<if test="bean.topType!=null">
-				 #{bean.topType},
-			</if>
-			<if test="bean.postTime!=null">
-				 #{bean.postTime},
-			</if>
-			<if test="bean.goodCount!=null">
-				 #{bean.goodCount},
-			</if>
-			<if test="bean.status!=null">
-				 #{bean.status},
-			</if>
-		 </trim>
-	</insert>
+    <!-- 插入 （匹配有值的字段）-->
+    <insert id="insert" parameterType="com.easybbs.entity.po.ForumComment">
+        <selectKey keyProperty="bean.commentId" resultType="Integer" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO forum_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bean.pCommentId != null">
+                p_comment_id,
+            </if>
+            <if test="bean.articleId != null">
+                article_id,
+            </if>
+            <if test="bean.content != null">
+                content,
+            </if>
+            <if test="bean.imgPath != null">
+                img_path,
+            </if>
+            <if test="bean.userId != null">
+                user_id,
+            </if>
+            <if test="bean.nickName != null">
+                nick_name,
+            </if>
+            <if test="bean.userIpAddress != null">
+                user_ip_address,
+            </if>
+            <if test="bean.replyUserId != null">
+                reply_user_id,
+            </if>
+            <if test="bean.replyNickName != null">
+                reply_nick_name,
+            </if>
+            <if test="bean.topType != null">
+                top_type,
+            </if>
+            <if test="bean.postTime != null">
+                post_time,
+            </if>
+            <if test="bean.goodCount != null">
+                good_count,
+            </if>
+            <if test="bean.status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bean.pCommentId!=null">
+                #{bean.pCommentId},
+            </if>
+            <if test="bean.articleId!=null">
+                #{bean.articleId},
+            </if>
+            <if test="bean.content!=null">
+                #{bean.content},
+            </if>
+            <if test="bean.imgPath!=null">
+                #{bean.imgPath},
+            </if>
+            <if test="bean.userId!=null">
+                #{bean.userId},
+            </if>
+            <if test="bean.nickName!=null">
+                #{bean.nickName},
+            </if>
+            <if test="bean.userIpAddress!=null">
+                #{bean.userIpAddress},
+            </if>
+            <if test="bean.replyUserId!=null">
+                #{bean.replyUserId},
+            </if>
+            <if test="bean.replyNickName!=null">
+                #{bean.replyNickName},
+            </if>
+            <if test="bean.topType!=null">
+                #{bean.topType},
+            </if>
+            <if test="bean.postTime!=null">
+                #{bean.postTime},
+            </if>
+            <if test="bean.goodCount!=null">
+                #{bean.goodCount},
+            </if>
+            <if test="bean.status!=null">
+                #{bean.status},
+            </if>
+        </trim>
+    </insert>
 
-	<!-- 插入或者更新 （匹配有值的字段）-->
-	<insert id="insertOrUpdate" parameterType="com.easybbs.entity.po.ForumComment">
-		 INSERT INTO forum_comment
-		 <trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="bean.commentId != null">
-				 comment_id,
-			</if>
-			<if test="bean.pCommentId != null">
-				 p_comment_id,
-			</if>
-			<if test="bean.articleId != null">
-				 article_id,
-			</if>
-			<if test="bean.content != null">
-				 content,
-			</if>
-			<if test="bean.imgPath != null">
-				 img_path,
-			</if>
-			<if test="bean.userId != null">
-				 user_id,
-			</if>
-			<if test="bean.nickName != null">
-				 nick_name,
-			</if>
-			<if test="bean.userIpAddress != null">
-				 user_ip_address,
-			</if>
-			<if test="bean.replyUserId != null">
-				 reply_user_id,
-			</if>
-			<if test="bean.replyNickName != null">
-				 reply_nick_name,
-			</if>
-			<if test="bean.topType != null">
-				 top_type,
-			</if>
-			<if test="bean.postTime != null">
-				 post_time,
-			</if>
-			<if test="bean.goodCount != null">
-				 good_count,
-			</if>
-			<if test="bean.status != null">
-				 status,
-			</if>
-		 </trim>
-		 <trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="bean.commentId!=null">
-				 #{bean.commentId},
-			</if>
-			<if test="bean.pCommentId!=null">
-				 #{bean.pCommentId},
-			</if>
-			<if test="bean.articleId!=null">
-				 #{bean.articleId},
-			</if>
-			<if test="bean.content!=null">
-				 #{bean.content},
-			</if>
-			<if test="bean.imgPath!=null">
-				 #{bean.imgPath},
-			</if>
-			<if test="bean.userId!=null">
-				 #{bean.userId},
-			</if>
-			<if test="bean.nickName!=null">
-				 #{bean.nickName},
-			</if>
-			<if test="bean.userIpAddress!=null">
-				 #{bean.userIpAddress},
-			</if>
-			<if test="bean.replyUserId!=null">
-				 #{bean.replyUserId},
-			</if>
-			<if test="bean.replyNickName!=null">
-				 #{bean.replyNickName},
-			</if>
-			<if test="bean.topType!=null">
-				 #{bean.topType},
-			</if>
-			<if test="bean.postTime!=null">
-				 #{bean.postTime},
-			</if>
-			<if test="bean.goodCount!=null">
-				 #{bean.goodCount},
-			</if>
-			<if test="bean.status!=null">
-				 #{bean.status},
-			</if>
-		 </trim>
-		 on DUPLICATE key update 
-		 <trim prefix="" suffix="" suffixOverrides=",">
-			<if test="bean.pCommentId!=null">
-				 p_comment_id = VALUES(p_comment_id),
-			</if>
-			<if test="bean.articleId!=null">
-				 article_id = VALUES(article_id),
-			</if>
-			<if test="bean.content!=null">
-				 content = VALUES(content),
-			</if>
-			<if test="bean.imgPath!=null">
-				 img_path = VALUES(img_path),
-			</if>
-			<if test="bean.userId!=null">
-				 user_id = VALUES(user_id),
-			</if>
-			<if test="bean.nickName!=null">
-				 nick_name = VALUES(nick_name),
-			</if>
-			<if test="bean.userIpAddress!=null">
-				 user_ip_address = VALUES(user_ip_address),
-			</if>
-			<if test="bean.replyUserId!=null">
-				 reply_user_id = VALUES(reply_user_id),
-			</if>
-			<if test="bean.replyNickName!=null">
-				 reply_nick_name = VALUES(reply_nick_name),
-			</if>
-			<if test="bean.topType!=null">
-				 top_type = VALUES(top_type),
-			</if>
-			<if test="bean.postTime!=null">
-				 post_time = VALUES(post_time),
-			</if>
-			<if test="bean.goodCount!=null">
-				 good_count = VALUES(good_count),
-			</if>
-			<if test="bean.status!=null">
-				 status = VALUES(status),
-			</if>
-		 </trim>
-	</insert>
+    <!-- 插入或者更新 （匹配有值的字段）-->
+    <insert id="insertOrUpdate" parameterType="com.easybbs.entity.po.ForumComment">
+        INSERT INTO forum_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bean.commentId != null">
+                comment_id,
+            </if>
+            <if test="bean.pCommentId != null">
+                p_comment_id,
+            </if>
+            <if test="bean.articleId != null">
+                article_id,
+            </if>
+            <if test="bean.content != null">
+                content,
+            </if>
+            <if test="bean.imgPath != null">
+                img_path,
+            </if>
+            <if test="bean.userId != null">
+                user_id,
+            </if>
+            <if test="bean.nickName != null">
+                nick_name,
+            </if>
+            <if test="bean.userIpAddress != null">
+                user_ip_address,
+            </if>
+            <if test="bean.replyUserId != null">
+                reply_user_id,
+            </if>
+            <if test="bean.replyNickName != null">
+                reply_nick_name,
+            </if>
+            <if test="bean.topType != null">
+                top_type,
+            </if>
+            <if test="bean.postTime != null">
+                post_time,
+            </if>
+            <if test="bean.goodCount != null">
+                good_count,
+            </if>
+            <if test="bean.status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bean.commentId!=null">
+                #{bean.commentId},
+            </if>
+            <if test="bean.pCommentId!=null">
+                #{bean.pCommentId},
+            </if>
+            <if test="bean.articleId!=null">
+                #{bean.articleId},
+            </if>
+            <if test="bean.content!=null">
+                #{bean.content},
+            </if>
+            <if test="bean.imgPath!=null">
+                #{bean.imgPath},
+            </if>
+            <if test="bean.userId!=null">
+                #{bean.userId},
+            </if>
+            <if test="bean.nickName!=null">
+                #{bean.nickName},
+            </if>
+            <if test="bean.userIpAddress!=null">
+                #{bean.userIpAddress},
+            </if>
+            <if test="bean.replyUserId!=null">
+                #{bean.replyUserId},
+            </if>
+            <if test="bean.replyNickName!=null">
+                #{bean.replyNickName},
+            </if>
+            <if test="bean.topType!=null">
+                #{bean.topType},
+            </if>
+            <if test="bean.postTime!=null">
+                #{bean.postTime},
+            </if>
+            <if test="bean.goodCount!=null">
+                #{bean.goodCount},
+            </if>
+            <if test="bean.status!=null">
+                #{bean.status},
+            </if>
+        </trim>
+        on DUPLICATE key update
+        <trim prefix="" suffix="" suffixOverrides=",">
+            <if test="bean.pCommentId!=null">
+                p_comment_id = VALUES(p_comment_id),
+            </if>
+            <if test="bean.articleId!=null">
+                article_id = VALUES(article_id),
+            </if>
+            <if test="bean.content!=null">
+                content = VALUES(content),
+            </if>
+            <if test="bean.imgPath!=null">
+                img_path = VALUES(img_path),
+            </if>
+            <if test="bean.userId!=null">
+                user_id = VALUES(user_id),
+            </if>
+            <if test="bean.nickName!=null">
+                nick_name = VALUES(nick_name),
+            </if>
+            <if test="bean.userIpAddress!=null">
+                user_ip_address = VALUES(user_ip_address),
+            </if>
+            <if test="bean.replyUserId!=null">
+                reply_user_id = VALUES(reply_user_id),
+            </if>
+            <if test="bean.replyNickName!=null">
+                reply_nick_name = VALUES(reply_nick_name),
+            </if>
+            <if test="bean.topType!=null">
+                top_type = VALUES(top_type),
+            </if>
+            <if test="bean.postTime!=null">
+                post_time = VALUES(post_time),
+            </if>
+            <if test="bean.goodCount!=null">
+                good_count = VALUES(good_count),
+            </if>
+            <if test="bean.status!=null">
+                status = VALUES(status),
+            </if>
+        </trim>
+    </insert>
 
-	<!-- 添加 （批量插入）-->
-	<insert id="insertBatch" parameterType="com.easybbs.entity.po.ForumComment" useGeneratedKeys="true" keyProperty="commentId">
-		 INSERT INTO forum_comment(
-			 p_comment_id,
-			 article_id,
-			 content,
-			 img_path,
-			 user_id,
-			 nick_name,
-			 user_ip_address,
-			 reply_user_id,
-			 reply_nick_name,
-			 top_type,
-			 post_time,
-			 good_count,
-			 status
-		 )values
-		 <foreach collection="list" item="item" separator=",">
-			 (
-				 #{item.pCommentId},
-				 #{item.articleId},
-				 #{item.content},
-				 #{item.imgPath},
-				 #{item.userId},
-				 #{item.nickName},
-				 #{item.userIpAddress},
-				 #{item.replyUserId},
-				 #{item.replyNickName},
-				 #{item.topType},
-				 #{item.postTime},
-				 #{item.goodCount},
-				 #{item.status}
-			 )
-		 </foreach>
-	</insert>
+    <!-- 添加 （批量插入）-->
+    <insert id="insertBatch" parameterType="com.easybbs.entity.po.ForumComment" useGeneratedKeys="true"
+            keyProperty="commentId">
+        INSERT INTO forum_comment(
+        p_comment_id,
+        article_id,
+        content,
+        img_path,
+        user_id,
+        nick_name,
+        user_ip_address,
+        reply_user_id,
+        reply_nick_name,
+        top_type,
+        post_time,
+        good_count,
+        status
+        )values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.pCommentId},
+            #{item.articleId},
+            #{item.content},
+            #{item.imgPath},
+            #{item.userId},
+            #{item.nickName},
+            #{item.userIpAddress},
+            #{item.replyUserId},
+            #{item.replyNickName},
+            #{item.topType},
+            #{item.postTime},
+            #{item.goodCount},
+            #{item.status}
+            )
+        </foreach>
+    </insert>
 
-	<!-- 批量新增修改 （批量插入）-->
-	<insert id="insertOrUpdateBatch" parameterType="com.easybbs.entity.po.ForumComment">
-		 INSERT INTO forum_comment(
-			 p_comment_id,
-			 article_id,
-			 content,
-			 img_path,
-			 user_id,
-			 nick_name,
-			 user_ip_address,
-			 reply_user_id,
-			 reply_nick_name,
-			 top_type,
-			 post_time,
-			 good_count,
-			 status
-		 )values
-		 <foreach collection="list" item="item" separator=",">
-			 (
-				 #{item.pCommentId},
-				 #{item.articleId},
-				 #{item.content},
-				 #{item.imgPath},
-				 #{item.userId},
-				 #{item.nickName},
-				 #{item.userIpAddress},
-				 #{item.replyUserId},
-				 #{item.replyNickName},
-				 #{item.topType},
-				 #{item.postTime},
-				 #{item.goodCount},
-				 #{item.status}
-			 )
-		 </foreach>
-			on DUPLICATE key update 
-			p_comment_id = VALUES(p_comment_id),
-			article_id = VALUES(article_id),
-			content = VALUES(content),
-			img_path = VALUES(img_path),
-			user_id = VALUES(user_id),
-			nick_name = VALUES(nick_name),
-			user_ip_address = VALUES(user_ip_address),
-			reply_user_id = VALUES(reply_user_id),
-			reply_nick_name = VALUES(reply_nick_name),
-			top_type = VALUES(top_type),
-			post_time = VALUES(post_time),
-			good_count = VALUES(good_count),
-			status = VALUES(status)
-	</insert>
+    <!-- 批量新增修改 （批量插入）-->
+    <insert id="insertOrUpdateBatch" parameterType="com.easybbs.entity.po.ForumComment">
+        INSERT INTO forum_comment(
+        p_comment_id,
+        article_id,
+        content,
+        img_path,
+        user_id,
+        nick_name,
+        user_ip_address,
+        reply_user_id,
+        reply_nick_name,
+        top_type,
+        post_time,
+        good_count,
+        status
+        )values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.pCommentId},
+            #{item.articleId},
+            #{item.content},
+            #{item.imgPath},
+            #{item.userId},
+            #{item.nickName},
+            #{item.userIpAddress},
+            #{item.replyUserId},
+            #{item.replyNickName},
+            #{item.topType},
+            #{item.postTime},
+            #{item.goodCount},
+            #{item.status}
+            )
+        </foreach>
+        on DUPLICATE key update
+        p_comment_id = VALUES(p_comment_id),
+        article_id = VALUES(article_id),
+        content = VALUES(content),
+        img_path = VALUES(img_path),
+        user_id = VALUES(user_id),
+        nick_name = VALUES(nick_name),
+        user_ip_address = VALUES(user_ip_address),
+        reply_user_id = VALUES(reply_user_id),
+        reply_nick_name = VALUES(reply_nick_name),
+        top_type = VALUES(top_type),
+        post_time = VALUES(post_time),
+        good_count = VALUES(good_count),
+        status = VALUES(status)
+    </insert>
 
-	<!--多条件修改-->
-	<update id="updateByParam" parameterType="com.easybbs.entity.query.ForumCommentQuery">
-		 UPDATE forum_comment
- 		 <set> 
-			<if test="bean.pCommentId != null">
-				 p_comment_id = #{bean.pCommentId},
-			</if>
-			<if test="bean.articleId != null">
-				 article_id = #{bean.articleId},
-			</if>
-			<if test="bean.content != null">
-				 content = #{bean.content},
-			</if>
-			<if test="bean.imgPath != null">
-				 img_path = #{bean.imgPath},
-			</if>
-			<if test="bean.userId != null">
-				 user_id = #{bean.userId},
-			</if>
-			<if test="bean.nickName != null">
-				 nick_name = #{bean.nickName},
-			</if>
-			<if test="bean.userIpAddress != null">
-				 user_ip_address = #{bean.userIpAddress},
-			</if>
-			<if test="bean.replyUserId != null">
-				 reply_user_id = #{bean.replyUserId},
-			</if>
-			<if test="bean.replyNickName != null">
-				 reply_nick_name = #{bean.replyNickName},
-			</if>
-			<if test="bean.topType != null">
-				 top_type = #{bean.topType},
-			</if>
-			<if test="bean.postTime != null">
-				 post_time = #{bean.postTime},
-			</if>
-			<if test="bean.goodCount != null">
-				 good_count = #{bean.goodCount},
-			</if>
-			<if test="bean.status != null">
-				 status = #{bean.status},
-			</if>
- 		 </set>
- 		 <include refid="query_condition" />
-	</update>
+    <!--多条件修改-->
+    <update id="updateByParam" parameterType="com.easybbs.entity.query.ForumCommentQuery">
+        UPDATE forum_comment
+        <set>
+            <if test="bean.pCommentId != null">
+                p_comment_id = #{bean.pCommentId},
+            </if>
+            <if test="bean.articleId != null">
+                article_id = #{bean.articleId},
+            </if>
+            <if test="bean.content != null">
+                content = #{bean.content},
+            </if>
+            <if test="bean.imgPath != null">
+                img_path = #{bean.imgPath},
+            </if>
+            <if test="bean.userId != null">
+                user_id = #{bean.userId},
+            </if>
+            <if test="bean.nickName != null">
+                nick_name = #{bean.nickName},
+            </if>
+            <if test="bean.userIpAddress != null">
+                user_ip_address = #{bean.userIpAddress},
+            </if>
+            <if test="bean.replyUserId != null">
+                reply_user_id = #{bean.replyUserId},
+            </if>
+            <if test="bean.replyNickName != null">
+                reply_nick_name = #{bean.replyNickName},
+            </if>
+            <if test="bean.topType != null">
+                top_type = #{bean.topType},
+            </if>
+            <if test="bean.postTime != null">
+                post_time = #{bean.postTime},
+            </if>
+            <if test="bean.goodCount != null">
+                good_count = #{bean.goodCount},
+            </if>
+            <if test="bean.status != null">
+                status = #{bean.status},
+            </if>
+        </set>
+        <include refid="query_condition"/>
+    </update>
 
-	<!--多条件删除-->
-	<delete id="deleteByParam">
-		 delete from forum_comment
- 		 <include refid="query_condition" />
-	</delete>
+    <!--多条件删除-->
+    <delete id="deleteByParam">
+        delete from forum_comment
+        <include refid="query_condition"/>
+    </delete>
 
-	<!-- 根据CommentId修改-->
-	<update id="updateByCommentId" parameterType="com.easybbs.entity.po.ForumComment">
-		 UPDATE forum_comment
- 		 <set> 
-			<if test="bean.pCommentId != null">
-				 p_comment_id = #{bean.pCommentId},
-			</if>
-			<if test="bean.articleId != null">
-				 article_id = #{bean.articleId},
-			</if>
-			<if test="bean.content != null">
-				 content = #{bean.content},
-			</if>
-			<if test="bean.imgPath != null">
-				 img_path = #{bean.imgPath},
-			</if>
-			<if test="bean.userId != null">
-				 user_id = #{bean.userId},
-			</if>
-			<if test="bean.nickName != null">
-				 nick_name = #{bean.nickName},
-			</if>
-			<if test="bean.userIpAddress != null">
-				 user_ip_address = #{bean.userIpAddress},
-			</if>
-			<if test="bean.replyUserId != null">
-				 reply_user_id = #{bean.replyUserId},
-			</if>
-			<if test="bean.replyNickName != null">
-				 reply_nick_name = #{bean.replyNickName},
-			</if>
-			<if test="bean.topType != null">
-				 top_type = #{bean.topType},
-			</if>
-			<if test="bean.postTime != null">
-				 post_time = #{bean.postTime},
-			</if>
-			<if test="bean.goodCount != null">
-				 good_count = #{bean.goodCount},
-			</if>
-			<if test="bean.status != null">
-				 status = #{bean.status},
-			</if>
- 		 </set>
- 		 where comment_id=#{commentId}
-	</update>
+    <!-- 根据CommentId修改-->
+    <update id="updateByCommentId" parameterType="com.easybbs.entity.po.ForumComment">
+        UPDATE forum_comment
+        <set>
+            <if test="bean.pCommentId != null">
+                p_comment_id = #{bean.pCommentId},
+            </if>
+            <if test="bean.articleId != null">
+                article_id = #{bean.articleId},
+            </if>
+            <if test="bean.content != null">
+                content = #{bean.content},
+            </if>
+            <if test="bean.imgPath != null">
+                img_path = #{bean.imgPath},
+            </if>
+            <if test="bean.userId != null">
+                user_id = #{bean.userId},
+            </if>
+            <if test="bean.nickName != null">
+                nick_name = #{bean.nickName},
+            </if>
+            <if test="bean.userIpAddress != null">
+                user_ip_address = #{bean.userIpAddress},
+            </if>
+            <if test="bean.replyUserId != null">
+                reply_user_id = #{bean.replyUserId},
+            </if>
+            <if test="bean.replyNickName != null">
+                reply_nick_name = #{bean.replyNickName},
+            </if>
+            <if test="bean.topType != null">
+                top_type = #{bean.topType},
+            </if>
+            <if test="bean.postTime != null">
+                post_time = #{bean.postTime},
+            </if>
+            <if test="bean.goodCount != null">
+                good_count = #{bean.goodCount},
+            </if>
+            <if test="bean.status != null">
+                status = #{bean.status},
+            </if>
+        </set>
+        where comment_id=#{commentId}
+    </update>
 
-	<!-- 根据CommentId删除-->
-	<delete id="deleteByCommentId">
-		delete from forum_comment where comment_id=#{commentId}
-	</delete>
+    <!-- 根据CommentId删除-->
+    <delete id="deleteByCommentId">
+        delete
+        from forum_comment
+        where comment_id = #{commentId}
+    </delete>
 
-	<!-- 根据PrimaryKey获取对象-->
-	<select id="selectByCommentId" resultMap="base_result_map" >
-		select <include refid="base_column_list" /> from forum_comment where comment_id=#{commentId}
-	</select>
+    <!-- 根据PrimaryKey获取对象-->
+    <select id="selectByCommentId" resultMap="base_result_map">
+        select
+        <include refid="base_column_list"/>
+        from forum_comment where comment_id=#{commentId}
+    </select>
+
+    <update id="updateArticleCount">
+        update forum_comment
+        set good_count = good_count + #{changeCount}
+        where comment_id = #{commentId}
+    </update>
+    <update id="updateTopTypeByArticleId">
+        update forum_comment
+        set top_type = 0
+        where article_id = #{articleId}
+    </update>
 
 </mapper>
