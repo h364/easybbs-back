@@ -4,10 +4,7 @@ import com.easybbs.anotation.GlobalInterceptor;
 import com.easybbs.anotation.VerifyParam;
 import com.easybbs.constants.Constants;
 import com.easybbs.dto.SessionWebUserDto;
-import com.easybbs.entity.enums.ArticleStatusEnum;
-import com.easybbs.entity.enums.OperRecordOpTypeEnum;
-import com.easybbs.entity.enums.PageSize;
-import com.easybbs.entity.enums.ResponseCodeEnum;
+import com.easybbs.entity.enums.*;
 import com.easybbs.entity.po.ForumComment;
 import com.easybbs.entity.po.LikeRecord;
 import com.easybbs.entity.query.ForumCommentQuery;
@@ -16,12 +13,15 @@ import com.easybbs.entity.vo.ResponseVO;
 import com.easybbs.exception.BusinessException;
 import com.easybbs.service.ForumCommentService;
 import com.easybbs.service.LikeRecordService;
+import com.easybbs.utils.StringTools;
 import com.easybbs.utils.SysCacheUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @RestController
 @RequestMapping("/comment")
@@ -82,6 +82,46 @@ public class ForumCommentController extends ABaseController {
                                     @VerifyParam(required = true) Integer topType) {
         SessionWebUserDto webUserDto = getUserInfoFromSession(session);
         forumCommentService.changeTopType(webUserDto.getUserId(), commentId, topType);
+
+        return getSuccessResponseVO(null);
+    }
+
+    @RequestMapping("/postComment")
+    @GlobalInterceptor(checkParams = true, checkLogin = true)
+    public ResponseVO postComment(HttpSession session,
+                                  @VerifyParam(required = true) String articleId,
+                                  @VerifyParam(required = true) Integer pCommentId,
+                                  @VerifyParam(min = 1, max = 500) String content,
+                                  MultipartFile image,
+                                  String replyUserId) {
+        if (!SysCacheUtils.getSysSetting().getCommentSetting().getCommentOpen()) {
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        if(image == null && StringTools.isEmpty(content)) {
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        SessionWebUserDto webUserDto = getUserInfoFromSession(session);
+        content = StringTools.escapeHtml(content);
+        ForumComment forumComment = new ForumComment();
+        forumComment.setUserId(webUserDto.getUserId());
+        forumComment.setNickName(webUserDto.getNickname());
+        forumComment.setUserIpAddress(webUserDto.getProvince());
+        forumComment.setpCommentId(pCommentId);
+        forumComment.setArticleId(articleId);
+        forumComment.setContent(content);
+        forumComment.setReplyUserId(replyUserId);
+        forumComment.setTopType(CommentTopTypeEnum.NO_TOP.getType());
+
+        forumCommentService.postComment(forumComment, image);
+
+        if(pCommentId != 0) {
+            ForumCommentQuery query = new ForumCommentQuery();
+            query.setArticleId(articleId);
+            query.setpCommentId(pCommentId);
+            query.setOrderBy("comment_id asc");
+            List<ForumComment> children = forumCommentService.findListByParam(query);
+            return getSuccessResponseVO(children);
+        }
 
         return getSuccessResponseVO(null);
     }

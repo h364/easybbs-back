@@ -5,6 +5,7 @@ import java.util.List;
 import com.easybbs.entity.query.ForumCommentQuery;
 import com.easybbs.entity.po.ForumComment;
 import com.easybbs.entity.vo.PaginationResultVO;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -70,4 +71,6 @@ public interface ForumCommentService {
 	Integer deleteForumCommentByCommentId(Integer commentId);
 
     void changeTopType(String userId, Integer commentId, Integer topType);
+
+    void postComment(ForumComment forumComment, MultipartFile image);
 }

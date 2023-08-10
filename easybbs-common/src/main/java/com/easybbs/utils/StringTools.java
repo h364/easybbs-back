@@ -1,4 +1,5 @@
 package com.easybbs.utils;
+
 import com.easybbs.exception.BusinessException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -58,7 +59,29 @@ public class StringTools {
         return RandomStringUtils.random(count, false, true);
     }
 
+    public static String getRandomString(Integer count) {
+        return RandomStringUtils.random(count, true, false);
+    }
+
     public static String encodeByMd5(String originStr) {
         return isEmpty(originStr) ? null : DigestUtils.md5Hex(originStr);
+    }
+
+    public static String getFileSuffix(String fileName) {
+        return fileName.substring(fileName.lastIndexOf("."));
+    }
+
+    public static String getFileName(String fileName) {
+        return fileName.substring(0, fileName.lastIndexOf('.'));
+    }
+
+    public static String escapeHtml(String content) {
+        if(StringTools.isEmpty(content)) {
+            return content;
+        }
+        content = content.replace("<", "&lt");
+        content = content.replace(" ", "&nbsp");
+        content = content.replace("\n", "<br>");
+        return content;
     }
 }
