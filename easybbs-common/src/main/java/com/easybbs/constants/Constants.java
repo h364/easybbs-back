@@ -27,15 +27,28 @@ public class Constants {
 
     public static final String[] IMAGE_SUFFIX = new String[]{".png", ".PNG", ".jpg", ".JPG", ".jpeg", ".JPEG", ".gif", ".GIF", ".bmp", ".BMP"};
 
+    public static final String READ_IMAGE_PATH = "/api/file/getImage/";
+
 
     public static final Integer ZERO = 0;
+
     public static final Integer ONE = 1;
+
     public static final Integer TWO = 2;
+
     public static final Integer INTEGRAL = 5;
+
     public static final Integer LENGTH_5 = 5;
+
     public static final Integer LENGTH_10 = 10;
+
     public static final Integer LENGTH_15 = 15;
+
     public static final Integer LENGTH_20 = 20;
+
     public static final Integer LENGTH_30 = 30;
+
     public static final Integer LENGTH_200 = 200;
+
+    public static final Integer FILE_SIZE_1M = 1024 * 1024;
 }

@@ -18,9 +18,7 @@ import com.easybbs.exception.BusinessException;
 import com.easybbs.mappers.UserIntegralRecordMapper;
 import com.easybbs.mappers.UserMessageMapper;
 import com.easybbs.service.EmailCodeService;
-import com.easybbs.utils.JsonUtils;
-import com.easybbs.utils.OKHttpUtils;
-import com.easybbs.utils.SysCacheUtils;
+import com.easybbs.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +28,8 @@ import com.easybbs.entity.vo.PaginationResultVO;
 import com.easybbs.entity.query.SimplePage;
 import com.easybbs.mappers.UserInfoMapper;
 import com.easybbs.service.UserInfoService;
-import com.easybbs.utils.StringTools;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -55,6 +53,9 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Resource
     private WebConfig webConfig;
+
+    @Resource
+    private FileUtils fileUtils;
 
     /**
      * 根据条件查询列表
@@ -324,5 +325,13 @@ public class UserInfoServiceImpl implements UserInfoService {
         UserInfo updateInfo = new UserInfo();
         updateInfo.setPassword(StringTools.encodeByMd5(password));
         userInfoMapper.updateByEmail(updateInfo, email);
+    }
+
+    @Override
+    public void updateUserInfo(UserInfo userInfo, MultipartFile avatar) {
+        userInfoMapper.updateByUserId(userInfo, userInfo.getUserId());
+        if (avatar != null) {
+            fileUtils.uploadFile2Local(avatar, userInfo.getUserId(), FileUploadTypeEnum.AVATAR);
+        }
     }
 }

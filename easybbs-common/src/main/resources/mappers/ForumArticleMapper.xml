@@ -1,870 +1,887 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.easybbs.mappers.ForumArticleMapper">
 
-	<!--实体映射-->
-	<resultMap id="base_result_map" type="com.easybbs.entity.po.ForumArticle">
-		<!--文章ID-->
-		<result column="article_id" property="articleId"  />
-		<!--板块ID-->
-		<result column="board_id" property="boardId"  />
-		<!--板块名称-->
-		<result column="board_name" property="boardName"  />
-		<!--父级板块ID-->
-		<result column="p_board_id" property="pBoardId"  />
-		<!--父板块名称-->
-		<result column="p_board_name" property="pBoardName"  />
-		<!--用户ID-->
-		<result column="user_id" property="userId"  />
-		<!--昵称-->
-		<result column="nick_name" property="nickName"  />
-		<!--最后登录ip地址-->
-		<result column="user_ip_address" property="userIpAddress"  />
-		<!--标题-->
-		<result column="title" property="title"  />
-		<!--封面-->
-		<result column="cover" property="cover"  />
-		<!--内容-->
-		<result column="content" property="content"  />
-		<!--markdown内容-->
-		<result column="markdown_content" property="markdownContent"  />
-		<!--0:富文本编辑器 1:markdown编辑器-->
-		<result column="editor_type" property="editorType"  />
-		<!--摘要-->
-		<result column="summary" property="summary"  />
-		<!--发布时间-->
-		<result column="post_time" property="postTime"  />
-		<!--最后更新时间-->
-		<result column="last_update_time" property="lastUpdateTime"  />
-		<!--阅读数量-->
-		<result column="read_count" property="readCount"  />
-		<!--点赞数-->
-		<result column="good_count" property="goodCount"  />
-		<!--评论数-->
-		<result column="comment_count" property="commentCount"  />
-		<!--0未置顶  1:已置顶-->
-		<result column="top_type" property="topType"  />
-		<!--0:没有附件  1:有附件-->
-		<result column="attachment_type" property="attachmentType"  />
-		<!---1已删除 0:待审核  1:已审核 -->
-		<result column="status" property="status"  />
-	</resultMap>
+    <!--实体映射-->
+    <resultMap id="base_result_map" type="com.easybbs.entity.po.ForumArticle">
+        <!--文章ID-->
+        <result column="article_id" property="articleId"/>
+        <!--板块ID-->
+        <result column="board_id" property="boardId"/>
+        <!--板块名称-->
+        <result column="board_name" property="boardName"/>
+        <!--父级板块ID-->
+        <result column="p_board_id" property="pBoardId"/>
+        <!--父板块名称-->
+        <result column="p_board_name" property="pBoardName"/>
+        <!--用户ID-->
+        <result column="user_id" property="userId"/>
+        <!--昵称-->
+        <result column="nick_name" property="nickName"/>
+        <!--最后登录ip地址-->
+        <result column="user_ip_address" property="userIpAddress"/>
+        <!--标题-->
+        <result column="title" property="title"/>
+        <!--封面-->
+        <result column="cover" property="cover"/>
+        <!--内容-->
+        <result column="content" property="content"/>
+        <!--markdown内容-->
+        <result column="markdown_content" property="markdownContent"/>
+        <!--0:富文本编辑器 1:markdown编辑器-->
+        <result column="editor_type" property="editorType"/>
+        <!--摘要-->
+        <result column="summary" property="summary"/>
+        <!--发布时间-->
+        <result column="post_time" property="postTime"/>
+        <!--最后更新时间-->
+        <result column="last_update_time" property="lastUpdateTime"/>
+        <!--阅读数量-->
+        <result column="read_count" property="readCount"/>
+        <!--点赞数-->
+        <result column="good_count" property="goodCount"/>
+        <!--评论数-->
+        <result column="comment_count" property="commentCount"/>
+        <!--0未置顶  1:已置顶-->
+        <result column="top_type" property="topType"/>
+        <!--0:没有附件  1:有附件-->
+        <result column="attachment_type" property="attachmentType"/>
+        <!---1已删除 0:待审核  1:已审核 -->
+        <result column="status" property="status"/>
+    </resultMap>
 
 
-	<!-- 通用查询结果列-->
-	<sql id="base_column_list">
-		 article_id,board_id,board_name,p_board_id,p_board_name,
+    <!-- 通用查询结果列-->
+    <sql id="base_column_list">
+        article_id
+        ,board_id,board_name,p_board_id,p_board_name,
 		 user_id,nick_name,user_ip_address,title,cover,editor_type,summary,post_time,
 		 last_update_time,read_count,good_count,comment_count,top_type,
 		 attachment_type,status
-	</sql>
+    </sql>
 
-	<sql id="base_condition_filed">
-			<if test="query.articleId != null and query.articleId!=''">
-				 and  article_id = #{query.articleId}
-			</if>
-			<if test="query.boardId != null">
-				 and  board_id = #{query.boardId}
-			</if>
-			<if test="query.boardName != null and query.boardName!=''">
-				 and  board_name = #{query.boardName}
-			</if>
-			<if test="query.pBoardId != null">
-				 and  p_board_id = #{query.pBoardId}
-			</if>
-			<if test="query.pBoardName != null and query.pBoardName!=''">
-				 and  p_board_name = #{query.pBoardName}
-			</if>
-			<if test="query.userId != null and query.userId!=''">
-				 and  user_id = #{query.userId}
-			</if>
-			<if test="query.nickName != null and query.nickName!=''">
-				 and  nick_name = #{query.nickName}
-			</if>
-			<if test="query.userIpAddress != null and query.userIpAddress!=''">
-				 and  user_ip_address = #{query.userIpAddress}
-			</if>
-			<if test="query.title != null and query.title!=''">
-				 and  title = #{query.title}
-			</if>
-			<if test="query.cover != null and query.cover!=''">
-				 and  cover = #{query.cover}
-			</if>
-			<if test="query.content != null and query.content!=''">
-				 and  content = #{query.content}
-			</if>
-			<if test="query.markdownContent != null and query.markdownContent!=''">
-				 and  markdown_content = #{query.markdownContent}
-			</if>
-			<if test="query.editorType != null">
-				 and  editor_type = #{query.editorType}
-			</if>
-			<if test="query.summary != null and query.summary!=''">
-				 and  summary = #{query.summary}
-			</if>
-			<if test="query.postTime != null and query.postTime!=''">
-				 <![CDATA[ and  post_time=str_to_date(#{query.postTime}, '%Y-%m-%d') ]]>
-			</if>
-			<if test="query.lastUpdateTime != null and query.lastUpdateTime!=''">
-				 <![CDATA[ and  last_update_time=str_to_date(#{query.lastUpdateTime}, '%Y-%m-%d') ]]>
-			</if>
-			<if test="query.readCount != null">
-				 and  read_count = #{query.readCount}
-			</if>
-			<if test="query.goodCount != null">
-				 and  good_count = #{query.goodCount}
-			</if>
-			<if test="query.commentCount != null">
-				 and  comment_count = #{query.commentCount}
-			</if>
-			<if test="query.topType != null">
-				 and  top_type = #{query.topType}
-			</if>
-			<if test="query.attachmentType != null">
-				 and  attachment_type = #{query.attachmentType}
-			</if>
-			<if test="query.status != null">
-				 and  status = #{query.status}
-			</if>
-	</sql>
-	<!-- 通用条件列-->
-	<sql id="base_condition">
-	 <where>
-		 <include refid="base_condition_filed" />
-	 </where>
-	</sql>
+    <sql id="base_condition_filed">
+        <if test="query.articleId != null and query.articleId!=''">
+            and article_id = #{query.articleId}
+        </if>
+        <if test="query.boardId != null">
+            and board_id = #{query.boardId}
+        </if>
+        <if test="query.boardName != null and query.boardName!=''">
+            and board_name = #{query.boardName}
+        </if>
+        <if test="query.pBoardId != null">
+            and p_board_id = #{query.pBoardId}
+        </if>
+        <if test="query.pBoardName != null and query.pBoardName!=''">
+            and p_board_name = #{query.pBoardName}
+        </if>
+        <if test="query.userId != null and query.userId!=''">
+            and user_id = #{query.userId}
+        </if>
+        <if test="query.nickName != null and query.nickName!=''">
+            and nick_name = #{query.nickName}
+        </if>
+        <if test="query.userIpAddress != null and query.userIpAddress!=''">
+            and user_ip_address = #{query.userIpAddress}
+        </if>
+        <if test="query.title != null and query.title!=''">
+            and title = #{query.title}
+        </if>
+        <if test="query.cover != null and query.cover!=''">
+            and cover = #{query.cover}
+        </if>
+        <if test="query.content != null and query.content!=''">
+            and content = #{query.content}
+        </if>
+        <if test="query.markdownContent != null and query.markdownContent!=''">
+            and markdown_content = #{query.markdownContent}
+        </if>
+        <if test="query.editorType != null">
+            and editor_type = #{query.editorType}
+        </if>
+        <if test="query.summary != null and query.summary!=''">
+            and summary = #{query.summary}
+        </if>
+        <if test="query.postTime != null and query.postTime!=''">
+            <![CDATA[ and  post_time=str_to_date(#{query.postTime}, '%Y-%m-%d') ]]>
+        </if>
+        <if test="query.lastUpdateTime != null and query.lastUpdateTime!=''">
+            <![CDATA[ and  last_update_time=str_to_date(#{query.lastUpdateTime}, '%Y-%m-%d') ]]>
+        </if>
+        <if test="query.readCount != null">
+            and read_count = #{query.readCount}
+        </if>
+        <if test="query.goodCount != null">
+            and good_count = #{query.goodCount}
+        </if>
+        <if test="query.commentCount != null">
+            and comment_count = #{query.commentCount}
+        </if>
+        <if test="query.topType != null">
+            and top_type = #{query.topType}
+        </if>
+        <if test="query.attachmentType != null">
+            and attachment_type = #{query.attachmentType}
+        </if>
+        <if test="query.status != null">
+            and status = #{query.status}
+        </if>
+    </sql>
+    <!-- 通用条件列-->
+    <sql id="base_condition">
+        <where>
+            <include refid="base_condition_filed"/>
+        </where>
+    </sql>
 
-	<!-- 通用查询条件列-->
-	<sql id="query_condition">
-	 <where>
-			<include refid="base_condition_filed" />
-			<if test="query.articleIdFuzzy!= null  and query.articleIdFuzzy!=''">
-				 and  article_id like concat('%', #{query.articleIdFuzzy}, '%')
-			</if>
-			<if test="query.boardNameFuzzy!= null  and query.boardNameFuzzy!=''">
-				 and  board_name like concat('%', #{query.boardNameFuzzy}, '%')
-			</if>
-			<if test="query.pBoardNameFuzzy!= null  and query.pBoardNameFuzzy!=''">
-				 and  p_board_name like concat('%', #{query.pBoardNameFuzzy}, '%')
-			</if>
-			<if test="query.userIdFuzzy!= null  and query.userIdFuzzy!=''">
-				 and  user_id like concat('%', #{query.userIdFuzzy}, '%')
-			</if>
-			<if test="query.nickNameFuzzy!= null  and query.nickNameFuzzy!=''">
-				 and  nick_name like concat('%', #{query.nickNameFuzzy}, '%')
-			</if>
-			<if test="query.userIpAddressFuzzy!= null  and query.userIpAddressFuzzy!=''">
-				 and  user_ip_address like concat('%', #{query.userIpAddressFuzzy}, '%')
-			</if>
-			<if test="query.titleFuzzy!= null  and query.titleFuzzy!=''">
-				 and  title like concat('%', #{query.titleFuzzy}, '%')
-			</if>
-			<if test="query.coverFuzzy!= null  and query.coverFuzzy!=''">
-				 and  cover like concat('%', #{query.coverFuzzy}, '%')
-			</if>
-			<if test="query.contentFuzzy!= null  and query.contentFuzzy!=''">
-				 and  content like concat('%', #{query.contentFuzzy}, '%')
-			</if>
-			<if test="query.markdownContentFuzzy!= null  and query.markdownContentFuzzy!=''">
-				 and  markdown_content like concat('%', #{query.markdownContentFuzzy}, '%')
-			</if>
-			<if test="query.summaryFuzzy!= null  and query.summaryFuzzy!=''">
-				 and  summary like concat('%', #{query.summaryFuzzy}, '%')
-			</if>
-			<if test="query.postTimeStart!= null and query.postTimeStart!=''">
-				 <![CDATA[ and  post_time>=str_to_date(#{query.postTimeStart}, '%Y-%m-%d') ]]>
-			</if>
-			<if test="query.postTimeEnd!= null and query.postTimeEnd!=''">
-				 <![CDATA[ and  post_time< date_sub(str_to_date(#{query.postTimeEnd},'%Y-%m-%d'),interval -1 day) ]]>
-			</if>
-			<if test="query.lastUpdateTimeStart!= null and query.lastUpdateTimeStart!=''">
-				 <![CDATA[ and  last_update_time>=str_to_date(#{query.lastUpdateTimeStart}, '%Y-%m-%d') ]]>
-			</if>
-			<if test="query.lastUpdateTimeEnd!= null and query.lastUpdateTimeEnd!=''">
-				 <![CDATA[ and  last_update_time< date_sub(str_to_date(#{query.lastUpdateTimeEnd},'%Y-%m-%d'),interval -1 day) ]]>
-			</if>
-			 <if test="query.currentUserId != null">
-				 and (status = 1 or (status = 0 and user_id = #{query.currentUserId}))
-			 </if>
-	 </where>
-	</sql>
+    <!-- 通用查询条件列-->
+    <sql id="query_condition">
+        <where>
+            <include refid="base_condition_filed"/>
+            <if test="query.articleIdFuzzy!= null  and query.articleIdFuzzy!=''">
+                and article_id like concat('%', #{query.articleIdFuzzy}, '%')
+            </if>
+            <if test="query.boardNameFuzzy!= null  and query.boardNameFuzzy!=''">
+                and board_name like concat('%', #{query.boardNameFuzzy}, '%')
+            </if>
+            <if test="query.pBoardNameFuzzy!= null  and query.pBoardNameFuzzy!=''">
+                and p_board_name like concat('%', #{query.pBoardNameFuzzy}, '%')
+            </if>
+            <if test="query.userIdFuzzy!= null  and query.userIdFuzzy!=''">
+                and user_id like concat('%', #{query.userIdFuzzy}, '%')
+            </if>
+            <if test="query.nickNameFuzzy!= null  and query.nickNameFuzzy!=''">
+                and nick_name like concat('%', #{query.nickNameFuzzy}, '%')
+            </if>
+            <if test="query.userIpAddressFuzzy!= null  and query.userIpAddressFuzzy!=''">
+                and user_ip_address like concat('%', #{query.userIpAddressFuzzy}, '%')
+            </if>
+            <if test="query.titleFuzzy!= null  and query.titleFuzzy!=''">
+                and title like concat('%', #{query.titleFuzzy}, '%')
+            </if>
+            <if test="query.coverFuzzy!= null  and query.coverFuzzy!=''">
+                and cover like concat('%', #{query.coverFuzzy}, '%')
+            </if>
+            <if test="query.contentFuzzy!= null  and query.contentFuzzy!=''">
+                and content like concat('%', #{query.contentFuzzy}, '%')
+            </if>
+            <if test="query.markdownContentFuzzy!= null  and query.markdownContentFuzzy!=''">
+                and markdown_content like concat('%', #{query.markdownContentFuzzy}, '%')
+            </if>
+            <if test="query.summaryFuzzy!= null  and query.summaryFuzzy!=''">
+                and summary like concat('%', #{query.summaryFuzzy}, '%')
+            </if>
+            <if test="query.postTimeStart!= null and query.postTimeStart!=''">
+                <![CDATA[ and  post_time>=str_to_date(#{query.postTimeStart}, '%Y-%m-%d') ]]>
+            </if>
+            <if test="query.postTimeEnd!= null and query.postTimeEnd!=''">
+                <![CDATA[ and  post_time< date_sub(str_to_date(#{query.postTimeEnd},'%Y-%m-%d'),interval -1 day) ]]>
+            </if>
+            <if test="query.lastUpdateTimeStart!= null and query.lastUpdateTimeStart!=''">
+                <![CDATA[ and  last_update_time>=str_to_date(#{query.lastUpdateTimeStart}, '%Y-%m-%d') ]]>
+            </if>
+            <if test="query.lastUpdateTimeEnd!= null and query.lastUpdateTimeEnd!=''">
+                <![CDATA[ and  last_update_time< date_sub(str_to_date(#{query.lastUpdateTimeEnd},'%Y-%m-%d'),interval -1 day) ]]>
+            </if>
+            <!-- 查询待审核的 -->
+            <if test="query.currentUserId != null">
+                and (status = 1 or (status = 0 and user_id = #{query.currentUserId}))
+            </if>
+            <!-- 评论 -->
+            <if test="query.commentUserId != null and query.commentUserId != ''">
+                and article_id in (select article_id from forum_comment where user_id = #{query.commentUserId})
+                and status = 1
+            </if>
+            <!-- 点赞 -->
+            <if test="query.likeUserId != null and query.likeUserId != ''">
+                and article_id in (select object_id from like_record where user_id = #{query.likeUserId} and op_type = 0)
+            </if>
+        </where>
+    </sql>
 
-	<!-- 查询集合-->
-	<select id="selectList" resultMap="base_result_map" >
-		 SELECT <include refid="base_column_list" /> FROM forum_article <include refid="query_condition" />
-		 <if test="query.orderBy!=null">
-			 order by ${query.orderBy}
-		 </if>
-		 <if test="query.simplePage!=null">
-			 limit #{query.simplePage.start},#{query.simplePage.end}
-		 </if>
-	</select>
+    <!-- 查询集合-->
+    <select id="selectList" resultMap="base_result_map">
+        SELECT
+        <include refid="base_column_list"/>
+        FROM forum_article
+        <include refid="query_condition"/>
+        <if test="query.orderBy!=null">
+            order by ${query.orderBy}
+        </if>
+        <if test="query.simplePage!=null">
+            limit #{query.simplePage.start},#{query.simplePage.end}
+        </if>
+    </select>
 
-	<!-- 查询数量-->
-	<select id="selectCount" resultType="java.lang.Integer" >
-		 SELECT count(1) FROM forum_article <include refid="query_condition" />
-	</select>
+    <!-- 查询数量-->
+    <select id="selectCount" resultType="java.lang.Integer">
+        SELECT count(1) FROM forum_article
+        <include refid="query_condition"/>
+    </select>
 
-	<!-- 插入 （匹配有值的字段）-->
-	<insert id="insert" parameterType="com.easybbs.entity.po.ForumArticle">
-		 INSERT INTO forum_article
-		 <trim prefix="(" suffix=")" suffixOverrides="," >
-			<if test="bean.articleId != null">
-				 article_id,
-			</if>
-			<if test="bean.boardId != null">
-				 board_id,
-			</if>
-			<if test="bean.boardName != null">
-				 board_name,
-			</if>
-			<if test="bean.pBoardId != null">
-				 p_board_id,
-			</if>
-			<if test="bean.pBoardName != null">
-				 p_board_name,
-			</if>
-			<if test="bean.userId != null">
-				 user_id,
-			</if>
-			<if test="bean.nickName != null">
-				 nick_name,
-			</if>
-			<if test="bean.userIpAddress != null">
-				 user_ip_address,
-			</if>
-			<if test="bean.title != null">
-				 title,
-			</if>
-			<if test="bean.cover != null">
-				 cover,
-			</if>
-			<if test="bean.content != null">
-				 content,
-			</if>
-			<if test="bean.markdownContent != null">
-				 markdown_content,
-			</if>
-			<if test="bean.editorType != null">
-				 editor_type,
-			</if>
-			<if test="bean.summary != null">
-				 summary,
-			</if>
-			<if test="bean.postTime != null">
-				 post_time,
-			</if>
-			<if test="bean.lastUpdateTime != null">
-				 last_update_time,
-			</if>
-			<if test="bean.readCount != null">
-				 read_count,
-			</if>
-			<if test="bean.goodCount != null">
-				 good_count,
-			</if>
-			<if test="bean.commentCount != null">
-				 comment_count,
-			</if>
-			<if test="bean.topType != null">
-				 top_type,
-			</if>
-			<if test="bean.attachmentType != null">
-				 attachment_type,
-			</if>
-			<if test="bean.status != null">
-				 status,
-			</if>
-		 </trim>
-		 <trim prefix="values (" suffix=")" suffixOverrides="," >
-			<if test="bean.articleId!=null">
-				 #{bean.articleId},
-			</if>
-			<if test="bean.boardId!=null">
-				 #{bean.boardId},
-			</if>
-			<if test="bean.boardName!=null">
-				 #{bean.boardName},
-			</if>
-			<if test="bean.pBoardId!=null">
-				 #{bean.pBoardId},
-			</if>
-			<if test="bean.pBoardName!=null">
-				 #{bean.pBoardName},
-			</if>
-			<if test="bean.userId!=null">
-				 #{bean.userId},
-			</if>
-			<if test="bean.nickName!=null">
-				 #{bean.nickName},
-			</if>
-			<if test="bean.userIpAddress!=null">
-				 #{bean.userIpAddress},
-			</if>
-			<if test="bean.title!=null">
-				 #{bean.title},
-			</if>
-			<if test="bean.cover!=null">
-				 #{bean.cover},
-			</if>
-			<if test="bean.content!=null">
-				 #{bean.content},
-			</if>
-			<if test="bean.markdownContent!=null">
-				 #{bean.markdownContent},
-			</if>
-			<if test="bean.editorType!=null">
-				 #{bean.editorType},
-			</if>
-			<if test="bean.summary!=null">
-				 #{bean.summary},
-			</if>
-			<if test="bean.postTime!=null">
-				 #{bean.postTime},
-			</if>
-			<if test="bean.lastUpdateTime!=null">
-				 #{bean.lastUpdateTime},
-			</if>
-			<if test="bean.readCount!=null">
-				 #{bean.readCount},
-			</if>
-			<if test="bean.goodCount!=null">
-				 #{bean.goodCount},
-			</if>
-			<if test="bean.commentCount!=null">
-				 #{bean.commentCount},
-			</if>
-			<if test="bean.topType!=null">
-				 #{bean.topType},
-			</if>
-			<if test="bean.attachmentType!=null">
-				 #{bean.attachmentType},
-			</if>
-			<if test="bean.status!=null">
-				 #{bean.status},
-			</if>
-		 </trim>
-	</insert>
+    <!-- 插入 （匹配有值的字段）-->
+    <insert id="insert" parameterType="com.easybbs.entity.po.ForumArticle">
+        INSERT INTO forum_article
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bean.articleId != null">
+                article_id,
+            </if>
+            <if test="bean.boardId != null">
+                board_id,
+            </if>
+            <if test="bean.boardName != null">
+                board_name,
+            </if>
+            <if test="bean.pBoardId != null">
+                p_board_id,
+            </if>
+            <if test="bean.pBoardName != null">
+                p_board_name,
+            </if>
+            <if test="bean.userId != null">
+                user_id,
+            </if>
+            <if test="bean.nickName != null">
+                nick_name,
+            </if>
+            <if test="bean.userIpAddress != null">
+                user_ip_address,
+            </if>
+            <if test="bean.title != null">
+                title,
+            </if>
+            <if test="bean.cover != null">
+                cover,
+            </if>
+            <if test="bean.content != null">
+                content,
+            </if>
+            <if test="bean.markdownContent != null">
+                markdown_content,
+            </if>
+            <if test="bean.editorType != null">
+                editor_type,
+            </if>
+            <if test="bean.summary != null">
+                summary,
+            </if>
+            <if test="bean.postTime != null">
+                post_time,
+            </if>
+            <if test="bean.lastUpdateTime != null">
+                last_update_time,
+            </if>
+            <if test="bean.readCount != null">
+                read_count,
+            </if>
+            <if test="bean.goodCount != null">
+                good_count,
+            </if>
+            <if test="bean.commentCount != null">
+                comment_count,
+            </if>
+            <if test="bean.topType != null">
+                top_type,
+            </if>
+            <if test="bean.attachmentType != null">
+                attachment_type,
+            </if>
+            <if test="bean.status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bean.articleId!=null">
+                #{bean.articleId},
+            </if>
+            <if test="bean.boardId!=null">
+                #{bean.boardId},
+            </if>
+            <if test="bean.boardName!=null">
+                #{bean.boardName},
+            </if>
+            <if test="bean.pBoardId!=null">
+                #{bean.pBoardId},
+            </if>
+            <if test="bean.pBoardName!=null">
+                #{bean.pBoardName},
+            </if>
+            <if test="bean.userId!=null">
+                #{bean.userId},
+            </if>
+            <if test="bean.nickName!=null">
+                #{bean.nickName},
+            </if>
+            <if test="bean.userIpAddress!=null">
+                #{bean.userIpAddress},
+            </if>
+            <if test="bean.title!=null">
+                #{bean.title},
+            </if>
+            <if test="bean.cover!=null">
+                #{bean.cover},
+            </if>
+            <if test="bean.content!=null">
+                #{bean.content},
+            </if>
+            <if test="bean.markdownContent!=null">
+                #{bean.markdownContent},
+            </if>
+            <if test="bean.editorType!=null">
+                #{bean.editorType},
+            </if>
+            <if test="bean.summary!=null">
+                #{bean.summary},
+            </if>
+            <if test="bean.postTime!=null">
+                #{bean.postTime},
+            </if>
+            <if test="bean.lastUpdateTime!=null">
+                #{bean.lastUpdateTime},
+            </if>
+            <if test="bean.readCount!=null">
+                #{bean.readCount},
+            </if>
+            <if test="bean.goodCount!=null">
+                #{bean.goodCount},
+            </if>
+            <if test="bean.commentCount!=null">
+                #{bean.commentCount},
+            </if>
+            <if test="bean.topType!=null">
+                #{bean.topType},
+            </if>
+            <if test="bean.attachmentType!=null">
+                #{bean.attachmentType},
+            </if>
+            <if test="bean.status!=null">
+                #{bean.status},
+            </if>
+        </trim>
+    </insert>
 
-	<!-- 插入或者更新 （匹配有值的字段）-->
-	<insert id="insertOrUpdate" parameterType="com.easybbs.entity.po.ForumArticle">
-		 INSERT INTO forum_article
-		 <trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="bean.articleId != null">
-				 article_id,
-			</if>
-			<if test="bean.boardId != null">
-				 board_id,
-			</if>
-			<if test="bean.boardName != null">
-				 board_name,
-			</if>
-			<if test="bean.pBoardId != null">
-				 p_board_id,
-			</if>
-			<if test="bean.pBoardName != null">
-				 p_board_name,
-			</if>
-			<if test="bean.userId != null">
-				 user_id,
-			</if>
-			<if test="bean.nickName != null">
-				 nick_name,
-			</if>
-			<if test="bean.userIpAddress != null">
-				 user_ip_address,
-			</if>
-			<if test="bean.title != null">
-				 title,
-			</if>
-			<if test="bean.cover != null">
-				 cover,
-			</if>
-			<if test="bean.content != null">
-				 content,
-			</if>
-			<if test="bean.markdownContent != null">
-				 markdown_content,
-			</if>
-			<if test="bean.editorType != null">
-				 editor_type,
-			</if>
-			<if test="bean.summary != null">
-				 summary,
-			</if>
-			<if test="bean.postTime != null">
-				 post_time,
-			</if>
-			<if test="bean.lastUpdateTime != null">
-				 last_update_time,
-			</if>
-			<if test="bean.readCount != null">
-				 read_count,
-			</if>
-			<if test="bean.goodCount != null">
-				 good_count,
-			</if>
-			<if test="bean.commentCount != null">
-				 comment_count,
-			</if>
-			<if test="bean.topType != null">
-				 top_type,
-			</if>
-			<if test="bean.attachmentType != null">
-				 attachment_type,
-			</if>
-			<if test="bean.status != null">
-				 status,
-			</if>
-		 </trim>
-		 <trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="bean.articleId!=null">
-				 #{bean.articleId},
-			</if>
-			<if test="bean.boardId!=null">
-				 #{bean.boardId},
-			</if>
-			<if test="bean.boardName!=null">
-				 #{bean.boardName},
-			</if>
-			<if test="bean.pBoardId!=null">
-				 #{bean.pBoardId},
-			</if>
-			<if test="bean.pBoardName!=null">
-				 #{bean.pBoardName},
-			</if>
-			<if test="bean.userId!=null">
-				 #{bean.userId},
-			</if>
-			<if test="bean.nickName!=null">
-				 #{bean.nickName},
-			</if>
-			<if test="bean.userIpAddress!=null">
-				 #{bean.userIpAddress},
-			</if>
-			<if test="bean.title!=null">
-				 #{bean.title},
-			</if>
-			<if test="bean.cover!=null">
-				 #{bean.cover},
-			</if>
-			<if test="bean.content!=null">
-				 #{bean.content},
-			</if>
-			<if test="bean.markdownContent!=null">
-				 #{bean.markdownContent},
-			</if>
-			<if test="bean.editorType!=null">
-				 #{bean.editorType},
-			</if>
-			<if test="bean.summary!=null">
-				 #{bean.summary},
-			</if>
-			<if test="bean.postTime!=null">
-				 #{bean.postTime},
-			</if>
-			<if test="bean.lastUpdateTime!=null">
-				 #{bean.lastUpdateTime},
-			</if>
-			<if test="bean.readCount!=null">
-				 #{bean.readCount},
-			</if>
-			<if test="bean.goodCount!=null">
-				 #{bean.goodCount},
-			</if>
-			<if test="bean.commentCount!=null">
-				 #{bean.commentCount},
-			</if>
-			<if test="bean.topType!=null">
-				 #{bean.topType},
-			</if>
-			<if test="bean.attachmentType!=null">
-				 #{bean.attachmentType},
-			</if>
-			<if test="bean.status!=null">
-				 #{bean.status},
-			</if>
-		 </trim>
-		 on DUPLICATE key update 
-		 <trim prefix="" suffix="" suffixOverrides=",">
-			<if test="bean.articleId!=null">
-				 article_id = VALUES(article_id),
-			</if>
-			<if test="bean.boardId!=null">
-				 board_id = VALUES(board_id),
-			</if>
-			<if test="bean.boardName!=null">
-				 board_name = VALUES(board_name),
-			</if>
-			<if test="bean.pBoardId!=null">
-				 p_board_id = VALUES(p_board_id),
-			</if>
-			<if test="bean.pBoardName!=null">
-				 p_board_name = VALUES(p_board_name),
-			</if>
-			<if test="bean.userId!=null">
-				 user_id = VALUES(user_id),
-			</if>
-			<if test="bean.nickName!=null">
-				 nick_name = VALUES(nick_name),
-			</if>
-			<if test="bean.userIpAddress!=null">
-				 user_ip_address = VALUES(user_ip_address),
-			</if>
-			<if test="bean.title!=null">
-				 title = VALUES(title),
-			</if>
-			<if test="bean.cover!=null">
-				 cover = VALUES(cover),
-			</if>
-			<if test="bean.content!=null">
-				 content = VALUES(content),
-			</if>
-			<if test="bean.markdownContent!=null">
-				 markdown_content = VALUES(markdown_content),
-			</if>
-			<if test="bean.editorType!=null">
-				 editor_type = VALUES(editor_type),
-			</if>
-			<if test="bean.summary!=null">
-				 summary = VALUES(summary),
-			</if>
-			<if test="bean.postTime!=null">
-				 post_time = VALUES(post_time),
-			</if>
-			<if test="bean.lastUpdateTime!=null">
-				 last_update_time = VALUES(last_update_time),
-			</if>
-			<if test="bean.readCount!=null">
-				 read_count = VALUES(read_count),
-			</if>
-			<if test="bean.goodCount!=null">
-				 good_count = VALUES(good_count),
-			</if>
-			<if test="bean.commentCount!=null">
-				 comment_count = VALUES(comment_count),
-			</if>
-			<if test="bean.topType!=null">
-				 top_type = VALUES(top_type),
-			</if>
-			<if test="bean.attachmentType!=null">
-				 attachment_type = VALUES(attachment_type),
-			</if>
-			<if test="bean.status!=null">
-				 status = VALUES(status),
-			</if>
-		 </trim>
-	</insert>
+    <!-- 插入或者更新 （匹配有值的字段）-->
+    <insert id="insertOrUpdate" parameterType="com.easybbs.entity.po.ForumArticle">
+        INSERT INTO forum_article
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bean.articleId != null">
+                article_id,
+            </if>
+            <if test="bean.boardId != null">
+                board_id,
+            </if>
+            <if test="bean.boardName != null">
+                board_name,
+            </if>
+            <if test="bean.pBoardId != null">
+                p_board_id,
+            </if>
+            <if test="bean.pBoardName != null">
+                p_board_name,
+            </if>
+            <if test="bean.userId != null">
+                user_id,
+            </if>
+            <if test="bean.nickName != null">
+                nick_name,
+            </if>
+            <if test="bean.userIpAddress != null">
+                user_ip_address,
+            </if>
+            <if test="bean.title != null">
+                title,
+            </if>
+            <if test="bean.cover != null">
+                cover,
+            </if>
+            <if test="bean.content != null">
+                content,
+            </if>
+            <if test="bean.markdownContent != null">
+                markdown_content,
+            </if>
+            <if test="bean.editorType != null">
+                editor_type,
+            </if>
+            <if test="bean.summary != null">
+                summary,
+            </if>
+            <if test="bean.postTime != null">
+                post_time,
+            </if>
+            <if test="bean.lastUpdateTime != null">
+                last_update_time,
+            </if>
+            <if test="bean.readCount != null">
+                read_count,
+            </if>
+            <if test="bean.goodCount != null">
+                good_count,
+            </if>
+            <if test="bean.commentCount != null">
+                comment_count,
+            </if>
+            <if test="bean.topType != null">
+                top_type,
+            </if>
+            <if test="bean.attachmentType != null">
+                attachment_type,
+            </if>
+            <if test="bean.status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bean.articleId!=null">
+                #{bean.articleId},
+            </if>
+            <if test="bean.boardId!=null">
+                #{bean.boardId},
+            </if>
+            <if test="bean.boardName!=null">
+                #{bean.boardName},
+            </if>
+            <if test="bean.pBoardId!=null">
+                #{bean.pBoardId},
+            </if>
+            <if test="bean.pBoardName!=null">
+                #{bean.pBoardName},
+            </if>
+            <if test="bean.userId!=null">
+                #{bean.userId},
+            </if>
+            <if test="bean.nickName!=null">
+                #{bean.nickName},
+            </if>
+            <if test="bean.userIpAddress!=null">
+                #{bean.userIpAddress},
+            </if>
+            <if test="bean.title!=null">
+                #{bean.title},
+            </if>
+            <if test="bean.cover!=null">
+                #{bean.cover},
+            </if>
+            <if test="bean.content!=null">
+                #{bean.content},
+            </if>
+            <if test="bean.markdownContent!=null">
+                #{bean.markdownContent},
+            </if>
+            <if test="bean.editorType!=null">
+                #{bean.editorType},
+            </if>
+            <if test="bean.summary!=null">
+                #{bean.summary},
+            </if>
+            <if test="bean.postTime!=null">
+                #{bean.postTime},
+            </if>
+            <if test="bean.lastUpdateTime!=null">
+                #{bean.lastUpdateTime},
+            </if>
+            <if test="bean.readCount!=null">
+                #{bean.readCount},
+            </if>
+            <if test="bean.goodCount!=null">
+                #{bean.goodCount},
+            </if>
+            <if test="bean.commentCount!=null">
+                #{bean.commentCount},
+            </if>
+            <if test="bean.topType!=null">
+                #{bean.topType},
+            </if>
+            <if test="bean.attachmentType!=null">
+                #{bean.attachmentType},
+            </if>
+            <if test="bean.status!=null">
+                #{bean.status},
+            </if>
+        </trim>
+        on DUPLICATE key update
+        <trim prefix="" suffix="" suffixOverrides=",">
+            <if test="bean.articleId!=null">
+                article_id = VALUES(article_id),
+            </if>
+            <if test="bean.boardId!=null">
+                board_id = VALUES(board_id),
+            </if>
+            <if test="bean.boardName!=null">
+                board_name = VALUES(board_name),
+            </if>
+            <if test="bean.pBoardId!=null">
+                p_board_id = VALUES(p_board_id),
+            </if>
+            <if test="bean.pBoardName!=null">
+                p_board_name = VALUES(p_board_name),
+            </if>
+            <if test="bean.userId!=null">
+                user_id = VALUES(user_id),
+            </if>
+            <if test="bean.nickName!=null">
+                nick_name = VALUES(nick_name),
+            </if>
+            <if test="bean.userIpAddress!=null">
+                user_ip_address = VALUES(user_ip_address),
+            </if>
+            <if test="bean.title!=null">
+                title = VALUES(title),
+            </if>
+            <if test="bean.cover!=null">
+                cover = VALUES(cover),
+            </if>
+            <if test="bean.content!=null">
+                content = VALUES(content),
+            </if>
+            <if test="bean.markdownContent!=null">
+                markdown_content = VALUES(markdown_content),
+            </if>
+            <if test="bean.editorType!=null">
+                editor_type = VALUES(editor_type),
+            </if>
+            <if test="bean.summary!=null">
+                summary = VALUES(summary),
+            </if>
+            <if test="bean.postTime!=null">
+                post_time = VALUES(post_time),
+            </if>
+            <if test="bean.lastUpdateTime!=null">
+                last_update_time = VALUES(last_update_time),
+            </if>
+            <if test="bean.readCount!=null">
+                read_count = VALUES(read_count),
+            </if>
+            <if test="bean.goodCount!=null">
+                good_count = VALUES(good_count),
+            </if>
+            <if test="bean.commentCount!=null">
+                comment_count = VALUES(comment_count),
+            </if>
+            <if test="bean.topType!=null">
+                top_type = VALUES(top_type),
+            </if>
+            <if test="bean.attachmentType!=null">
+                attachment_type = VALUES(attachment_type),
+            </if>
+            <if test="bean.status!=null">
+                status = VALUES(status),
+            </if>
+        </trim>
+    </insert>
 
-	<!-- 添加 （批量插入）-->
-	<insert id="insertBatch" parameterType="com.easybbs.entity.po.ForumArticle">
-		 INSERT INTO forum_article(
-			 article_id,
-			 board_id,
-			 board_name,
-			 p_board_id,
-			 p_board_name,
-			 user_id,
-			 nick_name,
-			 user_ip_address,
-			 title,
-			 cover,
-			 content,
-			 markdown_content,
-			 editor_type,
-			 summary,
-			 post_time,
-			 last_update_time,
-			 read_count,
-			 good_count,
-			 comment_count,
-			 top_type,
-			 attachment_type,
-			 status
-		 )values
-		 <foreach collection="list" item="item" separator=",">
-			 (
-				 #{item.articleId},
-				 #{item.boardId},
-				 #{item.boardName},
-				 #{item.pBoardId},
-				 #{item.pBoardName},
-				 #{item.userId},
-				 #{item.nickName},
-				 #{item.userIpAddress},
-				 #{item.title},
-				 #{item.cover},
-				 #{item.content},
-				 #{item.markdownContent},
-				 #{item.editorType},
-				 #{item.summary},
-				 #{item.postTime},
-				 #{item.lastUpdateTime},
-				 #{item.readCount},
-				 #{item.goodCount},
-				 #{item.commentCount},
-				 #{item.topType},
-				 #{item.attachmentType},
-				 #{item.status}
-			 )
-		 </foreach>
-	</insert>
+    <!-- 添加 （批量插入）-->
+    <insert id="insertBatch" parameterType="com.easybbs.entity.po.ForumArticle">
+        INSERT INTO forum_article(
+        article_id,
+        board_id,
+        board_name,
+        p_board_id,
+        p_board_name,
+        user_id,
+        nick_name,
+        user_ip_address,
+        title,
+        cover,
+        content,
+        markdown_content,
+        editor_type,
+        summary,
+        post_time,
+        last_update_time,
+        read_count,
+        good_count,
+        comment_count,
+        top_type,
+        attachment_type,
+        status
+        )values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.articleId},
+            #{item.boardId},
+            #{item.boardName},
+            #{item.pBoardId},
+            #{item.pBoardName},
+            #{item.userId},
+            #{item.nickName},
+            #{item.userIpAddress},
+            #{item.title},
+            #{item.cover},
+            #{item.content},
+            #{item.markdownContent},
+            #{item.editorType},
+            #{item.summary},
+            #{item.postTime},
+            #{item.lastUpdateTime},
+            #{item.readCount},
+            #{item.goodCount},
+            #{item.commentCount},
+            #{item.topType},
+            #{item.attachmentType},
+            #{item.status}
+            )
+        </foreach>
+    </insert>
 
-	<!-- 批量新增修改 （批量插入）-->
-	<insert id="insertOrUpdateBatch" parameterType="com.easybbs.entity.po.ForumArticle">
-		 INSERT INTO forum_article(
-			 article_id,
-			 board_id,
-			 board_name,
-			 p_board_id,
-			 p_board_name,
-			 user_id,
-			 nick_name,
-			 user_ip_address,
-			 title,
-			 cover,
-			 content,
-			 markdown_content,
-			 editor_type,
-			 summary,
-			 post_time,
-			 last_update_time,
-			 read_count,
-			 good_count,
-			 comment_count,
-			 top_type,
-			 attachment_type,
-			 status
-		 )values
-		 <foreach collection="list" item="item" separator=",">
-			 (
-				 #{item.articleId},
-				 #{item.boardId},
-				 #{item.boardName},
-				 #{item.pBoardId},
-				 #{item.pBoardName},
-				 #{item.userId},
-				 #{item.nickName},
-				 #{item.userIpAddress},
-				 #{item.title},
-				 #{item.cover},
-				 #{item.content},
-				 #{item.markdownContent},
-				 #{item.editorType},
-				 #{item.summary},
-				 #{item.postTime},
-				 #{item.lastUpdateTime},
-				 #{item.readCount},
-				 #{item.goodCount},
-				 #{item.commentCount},
-				 #{item.topType},
-				 #{item.attachmentType},
-				 #{item.status}
-			 )
-		 </foreach>
-			on DUPLICATE key update 
-			article_id = VALUES(article_id),
-			board_id = VALUES(board_id),
-			board_name = VALUES(board_name),
-			p_board_id = VALUES(p_board_id),
-			p_board_name = VALUES(p_board_name),
-			user_id = VALUES(user_id),
-			nick_name = VALUES(nick_name),
-			user_ip_address = VALUES(user_ip_address),
-			title = VALUES(title),
-			cover = VALUES(cover),
-			content = VALUES(content),
-			markdown_content = VALUES(markdown_content),
-			editor_type = VALUES(editor_type),
-			summary = VALUES(summary),
-			post_time = VALUES(post_time),
-			last_update_time = VALUES(last_update_time),
-			read_count = VALUES(read_count),
-			good_count = VALUES(good_count),
-			comment_count = VALUES(comment_count),
-			top_type = VALUES(top_type),
-			attachment_type = VALUES(attachment_type),
-			status = VALUES(status)
-	</insert>
+    <!-- 批量新增修改 （批量插入）-->
+    <insert id="insertOrUpdateBatch" parameterType="com.easybbs.entity.po.ForumArticle">
+        INSERT INTO forum_article(
+        article_id,
+        board_id,
+        board_name,
+        p_board_id,
+        p_board_name,
+        user_id,
+        nick_name,
+        user_ip_address,
+        title,
+        cover,
+        content,
+        markdown_content,
+        editor_type,
+        summary,
+        post_time,
+        last_update_time,
+        read_count,
+        good_count,
+        comment_count,
+        top_type,
+        attachment_type,
+        status
+        )values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.articleId},
+            #{item.boardId},
+            #{item.boardName},
+            #{item.pBoardId},
+            #{item.pBoardName},
+            #{item.userId},
+            #{item.nickName},
+            #{item.userIpAddress},
+            #{item.title},
+            #{item.cover},
+            #{item.content},
+            #{item.markdownContent},
+            #{item.editorType},
+            #{item.summary},
+            #{item.postTime},
+            #{item.lastUpdateTime},
+            #{item.readCount},
+            #{item.goodCount},
+            #{item.commentCount},
+            #{item.topType},
+            #{item.attachmentType},
+            #{item.status}
+            )
+        </foreach>
+        on DUPLICATE key update
+        article_id = VALUES(article_id),
+        board_id = VALUES(board_id),
+        board_name = VALUES(board_name),
+        p_board_id = VALUES(p_board_id),
+        p_board_name = VALUES(p_board_name),
+        user_id = VALUES(user_id),
+        nick_name = VALUES(nick_name),
+        user_ip_address = VALUES(user_ip_address),
+        title = VALUES(title),
+        cover = VALUES(cover),
+        content = VALUES(content),
+        markdown_content = VALUES(markdown_content),
+        editor_type = VALUES(editor_type),
+        summary = VALUES(summary),
+        post_time = VALUES(post_time),
+        last_update_time = VALUES(last_update_time),
+        read_count = VALUES(read_count),
+        good_count = VALUES(good_count),
+        comment_count = VALUES(comment_count),
+        top_type = VALUES(top_type),
+        attachment_type = VALUES(attachment_type),
+        status = VALUES(status)
+    </insert>
 
-	<!--多条件修改-->
-	<update id="updateByParam" parameterType="com.easybbs.entity.query.ForumArticleQuery">
-		 UPDATE forum_article
- 		 <set> 
-			<if test="bean.articleId != null">
-				 article_id = #{bean.articleId},
-			</if>
-			<if test="bean.boardId != null">
-				 board_id = #{bean.boardId},
-			</if>
-			<if test="bean.boardName != null">
-				 board_name = #{bean.boardName},
-			</if>
-			<if test="bean.pBoardId != null">
-				 p_board_id = #{bean.pBoardId},
-			</if>
-			<if test="bean.pBoardName != null">
-				 p_board_name = #{bean.pBoardName},
-			</if>
-			<if test="bean.userId != null">
-				 user_id = #{bean.userId},
-			</if>
-			<if test="bean.nickName != null">
-				 nick_name = #{bean.nickName},
-			</if>
-			<if test="bean.userIpAddress != null">
-				 user_ip_address = #{bean.userIpAddress},
-			</if>
-			<if test="bean.title != null">
-				 title = #{bean.title},
-			</if>
-			<if test="bean.cover != null">
-				 cover = #{bean.cover},
-			</if>
-			<if test="bean.content != null">
-				 content = #{bean.content},
-			</if>
-			<if test="bean.markdownContent != null">
-				 markdown_content = #{bean.markdownContent},
-			</if>
-			<if test="bean.editorType != null">
-				 editor_type = #{bean.editorType},
-			</if>
-			<if test="bean.summary != null">
-				 summary = #{bean.summary},
-			</if>
-			<if test="bean.postTime != null">
-				 post_time = #{bean.postTime},
-			</if>
-			<if test="bean.lastUpdateTime != null">
-				 last_update_time = #{bean.lastUpdateTime},
-			</if>
-			<if test="bean.readCount != null">
-				 read_count = #{bean.readCount},
-			</if>
-			<if test="bean.goodCount != null">
-				 good_count = #{bean.goodCount},
-			</if>
-			<if test="bean.commentCount != null">
-				 comment_count = #{bean.commentCount},
-			</if>
-			<if test="bean.topType != null">
-				 top_type = #{bean.topType},
-			</if>
-			<if test="bean.attachmentType != null">
-				 attachment_type = #{bean.attachmentType},
-			</if>
-			<if test="bean.status != null">
-				 status = #{bean.status},
-			</if>
- 		 </set>
- 		 <include refid="query_condition" />
-	</update>
+    <!--多条件修改-->
+    <update id="updateByParam" parameterType="com.easybbs.entity.query.ForumArticleQuery">
+        UPDATE forum_article
+        <set>
+            <if test="bean.articleId != null">
+                article_id = #{bean.articleId},
+            </if>
+            <if test="bean.boardId != null">
+                board_id = #{bean.boardId},
+            </if>
+            <if test="bean.boardName != null">
+                board_name = #{bean.boardName},
+            </if>
+            <if test="bean.pBoardId != null">
+                p_board_id = #{bean.pBoardId},
+            </if>
+            <if test="bean.pBoardName != null">
+                p_board_name = #{bean.pBoardName},
+            </if>
+            <if test="bean.userId != null">
+                user_id = #{bean.userId},
+            </if>
+            <if test="bean.nickName != null">
+                nick_name = #{bean.nickName},
+            </if>
+            <if test="bean.userIpAddress != null">
+                user_ip_address = #{bean.userIpAddress},
+            </if>
+            <if test="bean.title != null">
+                title = #{bean.title},
+            </if>
+            <if test="bean.cover != null">
+                cover = #{bean.cover},
+            </if>
+            <if test="bean.content != null">
+                content = #{bean.content},
+            </if>
+            <if test="bean.markdownContent != null">
+                markdown_content = #{bean.markdownContent},
+            </if>
+            <if test="bean.editorType != null">
+                editor_type = #{bean.editorType},
+            </if>
+            <if test="bean.summary != null">
+                summary = #{bean.summary},
+            </if>
+            <if test="bean.postTime != null">
+                post_time = #{bean.postTime},
+            </if>
+            <if test="bean.lastUpdateTime != null">
+                last_update_time = #{bean.lastUpdateTime},
+            </if>
+            <if test="bean.readCount != null">
+                read_count = #{bean.readCount},
+            </if>
+            <if test="bean.goodCount != null">
+                good_count = #{bean.goodCount},
+            </if>
+            <if test="bean.commentCount != null">
+                comment_count = #{bean.commentCount},
+            </if>
+            <if test="bean.topType != null">
+                top_type = #{bean.topType},
+            </if>
+            <if test="bean.attachmentType != null">
+                attachment_type = #{bean.attachmentType},
+            </if>
+            <if test="bean.status != null">
+                status = #{bean.status},
+            </if>
+        </set>
+        <include refid="query_condition"/>
+    </update>
 
-	<!--多条件删除-->
-	<delete id="deleteByParam">
-		 delete from forum_article
- 		 <include refid="query_condition" />
-	</delete>
+    <!--多条件删除-->
+    <delete id="deleteByParam">
+        delete from forum_article
+        <include refid="query_condition"/>
+    </delete>
 
-	<!-- 根据ArticleId修改-->
-	<update id="updateByArticleId" parameterType="com.easybbs.entity.po.ForumArticle">
-		 UPDATE forum_article
- 		 <set> 
-			<if test="bean.boardId != null">
-				 board_id = #{bean.boardId},
-			</if>
-			<if test="bean.boardName != null">
-				 board_name = #{bean.boardName},
-			</if>
-			<if test="bean.pBoardId != null">
-				 p_board_id = #{bean.pBoardId},
-			</if>
-			<if test="bean.pBoardName != null">
-				 p_board_name = #{bean.pBoardName},
-			</if>
-			<if test="bean.userId != null">
-				 user_id = #{bean.userId},
-			</if>
-			<if test="bean.nickName != null">
-				 nick_name = #{bean.nickName},
-			</if>
-			<if test="bean.userIpAddress != null">
-				 user_ip_address = #{bean.userIpAddress},
-			</if>
-			<if test="bean.title != null">
-				 title = #{bean.title},
-			</if>
-			<if test="bean.cover != null">
-				 cover = #{bean.cover},
-			</if>
-			<if test="bean.content != null">
-				 content = #{bean.content},
-			</if>
-			<if test="bean.markdownContent != null">
-				 markdown_content = #{bean.markdownContent},
-			</if>
-			<if test="bean.editorType != null">
-				 editor_type = #{bean.editorType},
-			</if>
-			<if test="bean.summary != null">
-				 summary = #{bean.summary},
-			</if>
-			<if test="bean.postTime != null">
-				 post_time = #{bean.postTime},
-			</if>
-			<if test="bean.lastUpdateTime != null">
-				 last_update_time = #{bean.lastUpdateTime},
-			</if>
-			<if test="bean.readCount != null">
-				 read_count = #{bean.readCount},
-			</if>
-			<if test="bean.goodCount != null">
-				 good_count = #{bean.goodCount},
-			</if>
-			<if test="bean.commentCount != null">
-				 comment_count = #{bean.commentCount},
-			</if>
-			<if test="bean.topType != null">
-				 top_type = #{bean.topType},
-			</if>
-			<if test="bean.attachmentType != null">
-				 attachment_type = #{bean.attachmentType},
-			</if>
-			<if test="bean.status != null">
-				 status = #{bean.status},
-			</if>
- 		 </set>
- 		 where article_id=#{articleId}
-	</update>
+    <!-- 根据ArticleId修改-->
+    <update id="updateByArticleId" parameterType="com.easybbs.entity.po.ForumArticle">
+        UPDATE forum_article
+        <set>
+            <if test="bean.boardId != null">
+                board_id = #{bean.boardId},
+            </if>
+            <if test="bean.boardName != null">
+                board_name = #{bean.boardName},
+            </if>
+            <if test="bean.pBoardId != null">
+                p_board_id = #{bean.pBoardId},
+            </if>
+            <if test="bean.pBoardName != null">
+                p_board_name = #{bean.pBoardName},
+            </if>
+            <if test="bean.userId != null">
+                user_id = #{bean.userId},
+            </if>
+            <if test="bean.nickName != null">
+                nick_name = #{bean.nickName},
+            </if>
+            <if test="bean.userIpAddress != null">
+                user_ip_address = #{bean.userIpAddress},
+            </if>
+            <if test="bean.title != null">
+                title = #{bean.title},
+            </if>
+            <if test="bean.cover != null">
+                cover = #{bean.cover},
+            </if>
+            <if test="bean.content != null">
+                content = #{bean.content},
+            </if>
+            <if test="bean.markdownContent != null">
+                markdown_content = #{bean.markdownContent},
+            </if>
+            <if test="bean.editorType != null">
+                editor_type = #{bean.editorType},
+            </if>
+            <if test="bean.summary != null">
+                summary = #{bean.summary},
+            </if>
+            <if test="bean.postTime != null">
+                post_time = #{bean.postTime},
+            </if>
+            <if test="bean.lastUpdateTime != null">
+                last_update_time = #{bean.lastUpdateTime},
+            </if>
+            <if test="bean.readCount != null">
+                read_count = #{bean.readCount},
+            </if>
+            <if test="bean.goodCount != null">
+                good_count = #{bean.goodCount},
+            </if>
+            <if test="bean.commentCount != null">
+                comment_count = #{bean.commentCount},
+            </if>
+            <if test="bean.topType != null">
+                top_type = #{bean.topType},
+            </if>
+            <if test="bean.attachmentType != null">
+                attachment_type = #{bean.attachmentType},
+            </if>
+            <if test="bean.status != null">
+                status = #{bean.status},
+            </if>
+        </set>
+        where article_id=#{articleId}
+    </update>
 
-	<!-- 根据ArticleId删除-->
-	<delete id="deleteByArticleId">
-		delete from forum_article where article_id=#{articleId}
-	</delete>
+    <!-- 根据ArticleId删除-->
+    <delete id="deleteByArticleId">
+        delete
+        from forum_article
+        where article_id = #{articleId}
+    </delete>
 
-	<!-- 根据PrimaryKey获取对象-->
-	<select id="selectByArticleId" resultMap="base_result_map" >
-		select
-		<include refid="base_column_list" />,content,markdown_content
-		from forum_article where article_id=#{articleId}
-	</select>
+    <!-- 根据PrimaryKey获取对象-->
+    <select id="selectByArticleId" resultMap="base_result_map">
+        select
+        <include refid="base_column_list"/>,content,markdown_content
+        from forum_article where article_id=#{articleId}
+    </select>
 
-	<update id="updateArticleCount">
-		update forum_article
-		<set>
-			<if test="updateType == 0">
-				read_count = read_count + #{changeCount}
-			</if>
-			<if test="updateType == 1">
-				good_count = good_count + #{changeCount}
-			</if>
-			<if test="updateType == 2">
-				comment_count = comment_count + #{changeCount}
-			</if>
-		</set>
-		where article_id = #{articleId}
-	</update>
+    <update id="updateArticleCount">
+        update forum_article
+        <set>
+            <if test="updateType == 0">
+                read_count = read_count + #{changeCount}
+            </if>
+            <if test="updateType == 1">
+                good_count = good_count + #{changeCount}
+            </if>
+            <if test="updateType == 2">
+                comment_count = comment_count + #{changeCount}
+            </if>
+        </set>
+        where article_id = #{articleId}
+    </update>
 
 </mapper>

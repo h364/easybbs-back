@@ -6,7 +6,6 @@ import com.easybbs.entity.config.AppConfig;
 import com.easybbs.entity.enums.DateTimePatternEnum;
 import com.easybbs.entity.enums.FileUploadTypeEnum;
 import com.easybbs.exception.BusinessException;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,8 +16,12 @@ import java.util.Date;
 
 @Component
 public class FileUtils {
+
     @Resource
     private AppConfig appConfig;
+
+    @Resource
+    private ImageUtils imageUtils;
 
     public FileUploadDto uploadFile2Local(MultipartFile file, String folder, FileUploadTypeEnum typeEnum) {
         try {
@@ -52,12 +55,12 @@ public class FileUtils {
             if(typeEnum == FileUploadTypeEnum.COMMENT_IMAGE) {
                 String thumbnailName = targetFile.getName().replace(".", "_.");
                 File thumbnail = new File(targetFile.getParent() + "/" + thumbnailName);
-                Boolean thumbnailCreated = ImageUtils.createThumbnail(targetFile, Constants.LENGTH_200, Constants.LENGTH_200, thumbnail);
+                Boolean thumbnailCreated = imageUtils.createThumbnail(targetFile, Constants.LENGTH_200, Constants.LENGTH_200, thumbnail);
                 if(!thumbnailCreated) {
                     org.apache.commons.io.FileUtils.copyFile(targetFile, thumbnail);
                 }
             }else if(typeEnum == FileUploadTypeEnum.AVATAR || typeEnum == FileUploadTypeEnum.ARTICLE_COVER) {
-                ImageUtils.createThumbnail(targetFile, Constants.LENGTH_200, Constants.LENGTH_200, targetFile);
+                imageUtils.createThumbnail(targetFile, Constants.LENGTH_200, Constants.LENGTH_200, targetFile);
             }
             fileUploadDto.setLocalPath(localPath);
             fileUploadDto.setOriginalFileName(originalFilename);

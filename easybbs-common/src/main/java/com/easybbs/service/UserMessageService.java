@@ -2,6 +2,7 @@ package com.easybbs.service;
 
 import java.util.List;
 
+import com.easybbs.dto.UserMessageCountDto;
 import com.easybbs.entity.query.UserMessageQuery;
 import com.easybbs.entity.po.UserMessage;
 import com.easybbs.entity.vo.PaginationResultVO;
@@ -87,4 +88,7 @@ public interface UserMessageService {
 	 */
 	Integer deleteUserMessageByArticleIdAndCommentIdAndSendUserIdAndMessageType(String articleId,Integer commentId,String sendUserId,Integer messageType);
 
+    UserMessageCountDto getMessageCount(String userId);
+
+    void readMessageByType(String receivedUserId, Integer messageType);
 }

@@ -2,9 +2,11 @@ package com.easybbs.service;
 
 import java.util.List;
 
+import com.easybbs.entity.po.ForumArticleAttachment;
 import com.easybbs.entity.query.ForumArticleQuery;
 import com.easybbs.entity.po.ForumArticle;
 import com.easybbs.entity.vo.PaginationResultVO;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -70,4 +72,8 @@ public interface ForumArticleService {
 	Integer deleteForumArticleByArticleId(String articleId);
 
     ForumArticle readArticle(String articleId);
+
+    void postArticle(Boolean isAdmin, ForumArticle forumArticle, ForumArticleAttachment forumArticleAttachment, MultipartFile cover, MultipartFile attachment);
+
+    void updateArticle(Boolean isAdmin, ForumArticle forumArticle, ForumArticleAttachment forumArticleAttachment, MultipartFile cover, MultipartFile attachment);
 }

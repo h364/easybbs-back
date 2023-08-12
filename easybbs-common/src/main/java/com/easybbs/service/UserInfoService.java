@@ -7,6 +7,7 @@ import com.easybbs.entity.enums.UserIntegralOperTypeEnum;
 import com.easybbs.entity.query.UserInfoQuery;
 import com.easybbs.entity.po.UserInfo;
 import com.easybbs.entity.vo.PaginationResultVO;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -114,4 +115,6 @@ public interface UserInfoService {
     SessionWebUserDto login(String email, String password, String ip);
 
     void resetPwd(String email, String password, String emailCode);
+
+    void updateUserInfo(UserInfo userInfo, MultipartFile avatar);
 }
