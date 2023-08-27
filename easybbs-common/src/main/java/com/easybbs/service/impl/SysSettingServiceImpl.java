@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.easybbs.component.RedisComponent;
 import com.easybbs.dto.SysSettingDto;
 import com.easybbs.entity.enums.SysSettingCodeEnum;
 import com.easybbs.utils.JsonUtils;
@@ -32,6 +33,9 @@ public class SysSettingServiceImpl implements SysSettingService {
 
     @Resource
     private SysSettingMapper<SysSetting, SysSettingQuery> sysSettingMapper;
+
+    @Resource
+    private RedisComponent redisComponent;
 
     /**
      * 根据条件查询列表
@@ -149,6 +153,7 @@ public class SysSettingServiceImpl implements SysSettingService {
                 Class<?> subClassz = Class.forName(sysSettingCodeEnum.getClassz());
                 method.invoke(sysSettingDto, JsonUtils.convertJson2Obj(sysSetting.getJsonContent(), subClassz));
             }
+            redisComponent.saveSysSetting(sysSettingDto);
             SysCacheUtils.refresh(sysSettingDto);
         } catch (Exception e) {
             log.error("刷新缓存失败");

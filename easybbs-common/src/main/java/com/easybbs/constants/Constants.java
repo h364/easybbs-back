@@ -29,6 +29,9 @@ public class Constants {
 
     public static final String READ_IMAGE_PATH = "/api/file/getImage/";
 
+    public static final String REDIS_KEY_HOT_ARTICLE = "easybbs:article:";
+
+    public static final String REDIS_KEY_SYS_SETTING = "easybbs:syssetting:";
 
     public static final Integer ZERO = 0;
 
@@ -49,6 +52,8 @@ public class Constants {
     public static final Integer LENGTH_30 = 30;
 
     public static final Integer LENGTH_200 = 200;
+
+    public static final Integer ONE_HOUR = 1000 * 60 * 60;
 
     public static final Integer FILE_SIZE_1M = 1024 * 1024;
 }

@@ -2,6 +2,7 @@ package com.easybbs.controller;
 
 import com.easybbs.anotation.GlobalInterceptor;
 import com.easybbs.anotation.VerifyParam;
+import com.easybbs.component.RedisComponent;
 import com.easybbs.constants.Constants;
 import com.easybbs.dto.CreateImageCode;
 import com.easybbs.dto.SessionWebUserDto;
@@ -32,6 +33,9 @@ public class AccountController extends ABaseController {
 
     @Resource
     private EmailCodeService emailCodeService;
+
+    @Resource
+    private RedisComponent redisComponent;
 
     @RequestMapping("/checkCode")
     public void checkCode(HttpServletResponse response, HttpSession session, Integer type) throws IOException {
@@ -124,7 +128,7 @@ public class AccountController extends ABaseController {
     @RequestMapping("/getSysSetting")
     @GlobalInterceptor()
     public ResponseVO getSysSetting() {
-        SysSettingDto settingDto = SysCacheUtils.getSysSetting();
+        SysSettingDto settingDto = redisComponent.getSysSetting();
         SysSetting4CommentDto commentDto = settingDto.getCommentSetting();
         HashMap<String, Object> result = new HashMap<>();
         result.put("commentOpen", commentDto.getCommentOpen());

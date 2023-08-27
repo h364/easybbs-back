@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.easybbs.component.RedisComponent;
 import com.easybbs.constants.Constants;
 import com.easybbs.dto.SessionWebUserDto;
 import com.easybbs.entity.config.WebConfig;
@@ -56,6 +57,9 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Resource
     private FileUtils fileUtils;
+
+    @Resource
+    private RedisComponent redisComponent;
 
     /**
      * 根据条件查询列表
@@ -241,7 +245,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         UserMessage userMessage = new UserMessage();
         userMessage.setReceivedUserId(userId);
         userMessage.setMessageType(MessageStatusEnum.NO_READ.getStatus());
-        userMessage.setMessageContent(SysCacheUtils.getSysSetting().getRegisterSetting().getRegisterWelcomeInfo());
+        userMessage.setMessageContent(redisComponent.getSysSetting().getRegisterSetting().getRegisterWelcomeInfo());
         userMessageMapper.insert(userMessage);
     }
 

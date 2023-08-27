@@ -2,6 +2,7 @@ package com.easybbs.controller;
 
 import com.easybbs.anotation.GlobalInterceptor;
 import com.easybbs.anotation.VerifyParam;
+import com.easybbs.component.RedisComponent;
 import com.easybbs.constants.Constants;
 import com.easybbs.dto.SessionWebUserDto;
 import com.easybbs.entity.enums.*;
@@ -33,13 +34,16 @@ public class ForumCommentController extends ABaseController {
     @Resource
     private LikeRecordService likeRecordService;
 
+    @Resource
+    private RedisComponent redisComponent;
+
     @RequestMapping("/loadComment")
     @GlobalInterceptor(checkParams = true)
     public ResponseVO loadComment(HttpSession session, @VerifyParam(required = true) String articleId, Integer pageNo, Integer orderType) {
         final String ORDER_TYPE0 = "good_count desc, comment_id asc";
         final String ORDER_TYPE1 = "comment_id desc";
 
-        if (!SysCacheUtils.getSysSetting().getCommentSetting().getCommentOpen()) {
+        if (!redisComponent.getSysSetting().getCommentSetting().getCommentOpen()) {
             throw new BusinessException(ResponseCodeEnum.CODE_600);
         }
 
@@ -56,7 +60,7 @@ public class ForumCommentController extends ABaseController {
         }
         query.setPageNo(pageNo);
         query.setPageSize(PageSize.SIZE50.getSize());
-        query.setCommentId(Constants.ZERO);
+        query.setpCommentId(Constants.ZERO);
         query.setLoadChildren(true);
 
         PaginationResultVO<ForumComment> forumCommentList = forumCommentService.findListByPage(query);
@@ -94,7 +98,7 @@ public class ForumCommentController extends ABaseController {
                                   @VerifyParam(min = 1, max = 500) String content,
                                   MultipartFile image,
                                   String replyUserId) {
-        if (!SysCacheUtils.getSysSetting().getCommentSetting().getCommentOpen()) {
+        if (!redisComponent.getSysSetting().getCommentSetting().getCommentOpen()) {
             throw new BusinessException(ResponseCodeEnum.CODE_600);
         }
         if(image == null && StringTools.isEmpty(content)) {

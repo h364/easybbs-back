@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.easybbs.component.RedisComponent;
 import com.easybbs.constants.Constants;
 import com.easybbs.dto.FileUploadDto;
 import com.easybbs.entity.enums.*;
@@ -55,6 +56,9 @@ public class ForumCommentServiceImpl implements ForumCommentService {
 
     @Resource
     private FileUtils fileUtils;
+
+    @Resource
+    private RedisComponent redisComponent;
 
     /**
      * 根据条件查询列表
@@ -229,7 +233,7 @@ public class ForumCommentServiceImpl implements ForumCommentService {
             FileUploadDto fileUploadDto = fileUtils.uploadFile2Local(image, Constants.FILE_FOLDER_IMAGE, FileUploadTypeEnum.COMMENT_IMAGE);
             forumComment.setImgPath(fileUploadDto.getLocalPath());
         }
-        Boolean needAudit = SysCacheUtils.getSysSetting().getAuditSetting().getCommentAudit();
+        Boolean needAudit = redisComponent.getSysSetting().getAuditSetting().getCommentAudit();
         forumComment.setStatus(needAudit ? CommentStatusEnum.NO_AUDIT.getStatus() : CommentStatusEnum.AUDIT.getStatus());
 
         forumCommentMapper.insert(forumComment);
@@ -240,7 +244,7 @@ public class ForumCommentServiceImpl implements ForumCommentService {
     }
 
     public void updateCommentInfo(ForumComment comment, ForumArticle article, ForumComment pComment) {
-        Integer integral = SysCacheUtils.getSysSetting().getCommentSetting().getCommentIntegral();
+        Integer integral = redisComponent.getSysSetting().getCommentSetting().getCommentIntegral();
         if (integral > 0) {
             userInfoService.updateUserIntegral(comment.getUserId(), UserIntegralOperTypeEnum.POST_COMMENT, UserIntegralChangeTypeEnum.ADD.getChangeType(), integral);
         }

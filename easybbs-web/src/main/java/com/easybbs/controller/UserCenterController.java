@@ -31,7 +31,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/userCenter")
+@RequestMapping("/ucenter")
 public class UserCenterController extends ABaseController {
 
     @Resource

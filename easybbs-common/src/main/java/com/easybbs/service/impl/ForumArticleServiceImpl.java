@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.easybbs.component.RedisComponent;
 import com.easybbs.constants.Constants;
 import com.easybbs.dto.FileUploadDto;
 import com.easybbs.dto.SysSetting4AuditDto;
@@ -59,6 +60,9 @@ public class ForumArticleServiceImpl implements ForumArticleService {
 
     @Resource
     private AppConfig appConfig;
+
+    @Resource
+    private RedisComponent redisComponent;
 
     /**
      * 根据条件查询列表
@@ -165,12 +169,18 @@ public class ForumArticleServiceImpl implements ForumArticleService {
 
     @Override
     public ForumArticle readArticle(String articleId) {
-        ForumArticle forumArticle = this.forumArticleMapper.selectByArticleId(articleId);
-        if (forumArticle == null) {
-            throw new BusinessException(ResponseCodeEnum.CODE_404);
+        ForumArticle RedisArticle = redisComponent.getHotArticle(Constants.REDIS_KEY_HOT_ARTICLE + articleId);
+        ForumArticle forumArticle = null;
+        if(RedisArticle == null) {
+            forumArticle = this.forumArticleMapper.selectByArticleId(articleId);
+            if (forumArticle == null) {
+                throw new BusinessException(ResponseCodeEnum.CODE_404);
+            }
+            redisComponent.saveHotArticle(forumArticle);
         }
         if (ArticleStatusEnum.AUDIT.getStatus().equals(forumArticle.getStatus())) {
             forumArticleMapper.updateArticleCount(UpdateArticleCountTypeEnum.READ_COUNT.getType(), Constants.ONE, articleId);
+            redisComponent.saveHotArticle(forumArticle);
         }
         return forumArticle;
     }
@@ -200,7 +210,7 @@ public class ForumArticleServiceImpl implements ForumArticleService {
         if (isAdmin) {
             forumArticle.setStatus(ArticleStatusEnum.AUDIT.getStatus());
         } else {
-            SysSetting4AuditDto auditDto = SysCacheUtils.getSysSetting().getAuditSetting();
+            SysSetting4AuditDto auditDto = redisComponent.getSysSetting().getAuditSetting();
             forumArticle.setStatus(auditDto.getPostAudit() ? ArticleStatusEnum.NO_AUDIT.getStatus() : ArticleStatusEnum.AUDIT.getStatus());
         }
         //替换图片
@@ -218,7 +228,7 @@ public class ForumArticleServiceImpl implements ForumArticleService {
         }
 
         forumArticleMapper.insert(forumArticle);
-        Integer postIntegral = SysCacheUtils.getSysSetting().getPostSetting().getPostIntegral();
+        Integer postIntegral = redisComponent.getSysSetting().getPostSetting().getPostIntegral();
         if (postIntegral > 0 && ArticleStatusEnum.AUDIT.getStatus().equals(forumArticle.getStatus())) {
             userInfoService.updateUserIntegral(forumArticle.getUserId(), UserIntegralOperTypeEnum.POST_ARTICLE, UserIntegralChangeTypeEnum.ADD.getChangeType(), postIntegral);
         }
@@ -267,7 +277,7 @@ public class ForumArticleServiceImpl implements ForumArticleService {
         if (isAdmin) {
             forumArticle.setStatus(ArticleStatusEnum.AUDIT.getStatus());
         } else {
-            SysSetting4AuditDto auditDto = SysCacheUtils.getSysSetting().getAuditSetting();
+            SysSetting4AuditDto auditDto = redisComponent.getSysSetting().getAuditSetting();
             forumArticle.setStatus(auditDto.getPostAudit() ? ArticleStatusEnum.NO_AUDIT.getStatus() :
                     ArticleStatusEnum.AUDIT.getStatus());
         }
@@ -309,7 +319,7 @@ public class ForumArticleServiceImpl implements ForumArticleService {
     }
 
     private void uploadAttachment(ForumArticle forumArticle, ForumArticleAttachment forumArticleAttachment, MultipartFile attachment, Boolean isUpdate) {
-        Integer allowSizeMb = SysCacheUtils.getSysSetting().getPostSetting().getAttachmentSize();
+        Integer allowSizeMb = redisComponent.getSysSetting().getPostSetting().getAttachmentSize();
         Integer allowSize = allowSizeMb * Constants.FILE_SIZE_1M;
         if (attachment.getSize() > allowSize) {
             throw new BusinessException("附件只能上传" + allowSize + "MB");
